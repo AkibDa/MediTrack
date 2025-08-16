@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">ℹ️ About This App</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">MediTrack Lite</h5>
+            <p class="card-text">
+                <strong>MediTrack Lite</strong> is a demo built with your original data-loading and prediction flow, plus:
+            </p>
+            <ul>
+                <li>Doctors & Hospitals finder with suggested specialists</li>
+                <li>Local reminders (CSV-based)</li>
+                <li>Simple rule-based chatbot</li>
+            </ul>
+            
+            <div class="alert alert-danger">
+                <strong>Disclaimer:</strong> This prototype is for educational/demo purposes only and <strong>not</strong> a medical device.
+                Always consult licensed professionals for diagnosis or treatment.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

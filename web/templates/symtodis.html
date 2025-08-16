@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Welcome to MediTrack Lite</h1>
+    <div class="alert alert-warning">
+        <strong>⚠️ Disclaimer:</strong> This prototype is for educational/demo purposes only and <strong>not</strong> a medical device. Always consult licensed professionals for diagnosis or treatment.
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Symptom Checker</h5>
+                    <p class="card-text">Select your symptoms to get possible disease predictions.</p>
+                    <a href="{{ url_for('symptom_checker') }}" class="btn btn-primary">Go to Symptom Checker</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Doctors & Hospitals</h5>
+                    <p class="card-text">Find specialists and hospitals near you.</p>
+                    <a href="{{ url_for('doctors') }}" class="btn btn-primary">Find Doctors</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Reminders</h5>
+                    <p class="card-text">Set medicine and appointment reminders.</p>
+                    <a href="{{ url_for('reminders') }}" class="btn btn-primary">Manage Reminders</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

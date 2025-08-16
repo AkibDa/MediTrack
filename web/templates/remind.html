@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">⏰ Medicine & Appointment Reminders</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Add New Reminder</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('reminders') }}">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="reminder_date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="reminder_date" name="reminder_date" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="reminder_time" class="form-label">Time</label>
+                        <input type="time" class="form-control" id="reminder_time" name="reminder_time" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="reminder_type" class="form-label">Type</label>
+                        <select class="form-select" id="reminder_type" name="reminder_type" required>
+                            <option value="Medicine">Medicine</option>
+                            <option value="Appointment">Appointment</option>
+                            <option value="Test">Test</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="reminder_text" class="form-label">Reminder Text</label>
+                        <input type="text" class="form-control" id="reminder_text" name="reminder_text" placeholder="e.g., Take 500mg paracetamol" required>
+                    </div>
+                </div>
+                <button type="submit" name="add_reminder" class="btn btn-primary">Add Reminder</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5>Your Reminders</h5>
+        </div>
+        <div class="card-body">
+            {% if reminders %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Type</th>
+                                <th>Text</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reminder in reminders %}
+                                <tr>
+                                    <td>{{ reminder.when_date }}</td>
+                                    <td>{{ reminder.when_time }}</td>
+                                    <td>{{ reminder.type }}</td>
+                                    <td>{{ reminder.text }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('reminders') }}" style="display: inline;">
+                                            <input type="hidden" name="delete_index" value="{{ loop.index0 }}">
+                                            <button type="submit" name="delete_reminder" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">No reminders yet. Add one above.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
