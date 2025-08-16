@@ -1,24 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mt-4">💬 Health Chatbot (Lite)</h1>
+<div class="main-content">
+    <h1 class="form-title">💬 Health Chatbot (Lite)</h1>
     <div class="alert alert-warning">
         Demo assistant. For medical advice, consult a professional.
     </div>
     
-    <div class="card mb-3">
+    <div class="card">
+        <div class="card-header">
+            <h5>Chat History</h5>
+        </div>
         <div class="card-body chat-container" style="height: 400px; overflow-y: auto;">
             {% for message in chat %}
                 {% if message[0] == 'You' %}
-                    <div class="d-flex justify-content-end mb-2">
-                        <div class="bg-primary text-white p-2 rounded" style="max-width: 70%;">
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                        <div style="background-color: #0d6efd; color: white; padding: 8px 12px; border-radius: 8px; max-width: 70%;">
                             <strong>{{ message[0] }}:</strong> {{ message[1] }}
                         </div>
                     </div>
                 {% else %}
-                    <div class="d-flex justify-content-start mb-2">
-                        <div class="bg-light p-2 rounded" style="max-width: 70%;">
+                    <div style="display: flex; justify-content: flex-start; margin-bottom: 10px;">
+                        <div style="background-color: #e9ecef; padding: 8px 12px; border-radius: 8px; max-width: 70%;">
                             <strong>{{ message[0] }}:</strong> {{ message[1] }}
                         </div>
                     </div>
@@ -27,12 +30,14 @@
         </div>
     </div>
     
-    <form method="POST" action="{{ url_for('chatbot') }}">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" name="user_message" placeholder="Ask a question about your symptoms or urgency...">
-            <button class="btn btn-primary" type="submit">Send</button>
-        </div>
-    </form>
+    <div class="form-container">
+        <form method="POST" action="{{ url_for('chatbot') }}">
+            <div class="input-group">
+                <input type="text" class="form-control" name="user_message" placeholder="Ask a question about your symptoms or urgency...">
+                <button class="btn btn-primary" type="submit">Send</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script>

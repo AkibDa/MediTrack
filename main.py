@@ -5,8 +5,8 @@ from sklearn.ensemble import RandomForestClassifier
 from datetime import date, time
 import os
 
-app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # Change this for production
+app = Flask(__name__, template_folder='web/templates', static_folder='web/static')
+app.secret_key = 'qwertyuiopasdfghjklzxcvbnm'  # Change this for production
 
 # -----------------------------
 # Data Loading and Helper Functions
@@ -142,7 +142,6 @@ def chatbot_reply(user_msg: str) -> str:
             "Tell me symptoms or ask about urgency. ⚠️ Not medical advice.")
 
 # Initialize data on first request
-@app.before_first_request
 def initialize_data():
     try:
         df, df_precaution, df_description = load_data()
@@ -162,13 +161,17 @@ def initialize_data():
         app.logger.error(f"Failed to load data: {e}")
         raise
 
+# Initialize data when app starts
+with app.app_context():
+    initialize_data()
+
 # -----------------------------
 # Routes
 # -----------------------------
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('home.html')
 
 @app.route('/symptom_checker', methods=['GET', 'POST'])
 def symptom_checker():
@@ -177,7 +180,7 @@ def symptom_checker():
         results, error = predict_disease(selected_symptoms, app.df, app.df_precaution, app.df_description)
         
         if error:
-            return render_template('symptom_checker.html', 
+            return render_template('symtodis.html', 
                                  symptoms=app.ALL_SYMPTOMS,
                                  error=error)
         else:
@@ -185,12 +188,12 @@ def symptom_checker():
             session['last_selected_symptoms'] = selected_symptoms
             session['last_disease_for_doctors'] = results[0]['disease']
             
-            return render_template('symptom_checker.html',
+            return render_template('symtodis.html',
                                 symptoms=app.ALL_SYMPTOMS,
                                 results=results,
                                 selected_symptoms=selected_symptoms)
     
-    return render_template('symptom_checker.html', symptoms=app.ALL_SYMPTOMS)
+    return render_template('symtodis.html', symptoms=app.ALL_SYMPTOMS)
 
 @app.route('/doctors', methods=['GET', 'POST'])
 def doctors():
@@ -219,7 +222,7 @@ def doctors():
     cities = sorted(DOCTORS_DB['city'].unique())
     specializations = sorted(DOCTORS_DB['specialization'].unique())
     
-    return render_template('doctors.html',
+    return render_template('findoc.html',
                          doctors=filtered.to_dict('records'),
                          cities=cities,
                          specializations=specializations,
@@ -256,7 +259,7 @@ def reminders():
             reminders_df = reminders_df.drop(reminders_df.index[del_index]).reset_index(drop=True)
             save_reminders(reminders_df)
     
-    return render_template('reminders.html', reminders=reminders_df.to_dict('records'))
+    return render_template('remind.html', reminders=reminders_df.to_dict('records'))
 
 @app.route('/chatbot', methods=['GET', 'POST'])
 def chatbot():
@@ -273,9 +276,9 @@ def chatbot():
     
     return render_template('chatbot.html', chat=session.get('chat', []))
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
+@app.route('/explore')
+def explore():
+    return render_template('explore.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

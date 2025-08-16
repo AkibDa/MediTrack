@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mt-4">⏰ Medicine & Appointment Reminders</h1>
+<div class="main-content">
+    <h1 class="form-title">⏰ Medicine & Appointment Reminders</h1>
     
-    <div class="card mb-4">
+    <div class="card">
         <div class="card-header">
             <h5>Add New Reminder</h5>
         </div>
         <div class="card-body">
             <form method="POST" action="{{ url_for('reminders') }}">
-                <div class="row mb-3">
-                    <div class="col-md-3">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div class="form-group">
                         <label for="reminder_date" class="form-label">Date</label>
                         <input type="date" class="form-control" id="reminder_date" name="reminder_date" required>
                     </div>
-                    <div class="col-md-3">
+                    <div class="form-group">
                         <label for="reminder_time" class="form-label">Time</label>
                         <input type="time" class="form-control" id="reminder_time" name="reminder_time" required>
                     </div>
-                    <div class="col-md-3">
+                    <div class="form-group">
                         <label for="reminder_type" class="form-label">Type</label>
                         <select class="form-select" id="reminder_type" name="reminder_type" required>
                             <option value="Medicine">Medicine</option>
@@ -28,7 +28,7 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="form-group">
                         <label for="reminder_text" class="form-label">Reminder Text</label>
                         <input type="text" class="form-control" id="reminder_text" name="reminder_text" placeholder="e.g., Take 500mg paracetamol" required>
                     </div>
@@ -44,8 +44,8 @@
         </div>
         <div class="card-body">
             {% if reminders %}
-                <div class="table-responsive">
-                    <table class="table table-striped">
+                <div style="overflow-x: auto;">
+                    <table>
                         <thead>
                             <tr>
                                 <th>Date</th>

@@ -29,12 +29,17 @@ def home():
 @views.route('/delete_reminder', methods=['POST'])
 @login_required
 def delete_reminder():
-  reminder = json.loads(request.data)
-  reminder_id = reminder['reminderId']
-  reminder = Reminder.query.get(reminder_id)
-  if reminder.user_id == current_user.id:
-    db.session.delete(reminder)
-    db.session.commit()
-    flash("Reminder deleted!", category='success')
+  try:
+    reminder = json.loads(request.data)
+    reminder_id = reminder['reminderId']
+    reminder = Reminder.query.get(reminder_id)
+    if reminder and reminder.user_id == current_user.id:
+      db.session.delete(reminder)
+      db.session.commit()
+      flash("Reminder deleted!", category='success')
+    else:
+      flash("Reminder not found or access denied!", category='error')
+  except Exception as e:
+    flash("Error deleting reminder!", category='error')
   
   return jsonify({})

@@ -15,20 +15,31 @@ const featuresData = [
 
 const featuresSection = document.getElementById("featuresSection");
 
-featuresData.forEach(feature => {
-  const card = document.createElement("div");
-  card.classList.add("feature-card");
-  card.innerHTML = `
-    <h3>${feature.title}</h3>
-    <p>${feature.description}</p>
-  `;
-  featuresSection.appendChild(card);
-});
+if (featuresSection) {
+  featuresData.forEach(feature => {
+    const card = document.createElement("div");
+    card.classList.add("feature-card");
+    card.innerHTML = `
+      <h3>${feature.title}</h3>
+      <p>${feature.description}</p>
+    `;
+    featuresSection.appendChild(card);
+  });
+}
 
 // Navigate to selection page
-document.getElementById("startBtn").addEventListener("click", () => {
-  window.location.href = "explore.html";
-});
+const startBtn = document.getElementById("startBtn");
+if (startBtn) {
+  startBtn.addEventListener("click", () => {
+    window.location.href = "/explore";
+  });
+}
 
 const notify = (feature) => alert(`Opening ${feature} (coming soon)`);
-  document.getElementById('selectChatbot').addEventListener('click', (e) => { e.preventDefault(); notify('AI Chatbot'); });
+const selectChatbot = document.getElementById('selectChatbot');
+if (selectChatbot) {
+  selectChatbot.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    notify('AI Chatbot'); 
+  });
+}

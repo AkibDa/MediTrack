@@ -8,9 +8,17 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+  if current_user.is_authenticated:
+    return redirect(url_for('views.home'))
+    
   if request.method == 'POST':
     email = request.form.get('email')
     password = request.form.get('password')
+    
+    if not email or not password:
+      flash("Please fill in all fields!", category='error')
+      return render_template('login.html', user=current_user)
+    
     user = User.query.filter_by(email=email).first()
     if user:
       if check_password_hash(user.password, password):

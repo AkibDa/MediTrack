@@ -1,24 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="form-container">
   <form method="POST" action="/register">
-    <h3 align="center">Register</h3>
-    <div class="mb-3">
+    <h3 class="form-title">Register</h3>
+    <div class="form-group">
       <label for="username" class="form-label">Username</label>
       <input type="text" class="form-control" id="username" name="username" placeholder="Enter the username" required>
     </div>
-    <div class="mb-3">
+    <div class="form-group">
       <label for="email" class="form-label">Email</label>
-      <input type="text" class="form-control" id="email" name="email" placeholder="Enter the email" required>
+      <input type="email" class="form-control" id="email" name="email" placeholder="Enter the email" required>
     </div>
-    <div class="mb-3">
+    <div class="form-group">
       <label for="password1" class="form-label">Password</label>
       <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter the password" required>
     </div>
-    <div class="mb-3">
+    <div class="form-group">
       <label for="password2" class="form-label">Password (Confirm)</label>
       <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm the password" required>
     </div>
-    <br/>
     <button type="submit" class="btn btn-primary">Register</button>
   </form>
+</div>
 {% endblock %}

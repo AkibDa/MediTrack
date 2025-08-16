@@ -1,16 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="hero">
-    <div class="hero-text">
-        <h2 class="page-title">Your Health, Our Priority</h2>
-        <p>MediTask helps you manage medical appointments, reminders, and health tracking with ease. Stay connected with your care providers anytime, anywhere.</p>
-        <button id="startBtn">Get Started</button>
+<div class="main-content">
+    <div class="card">
+        <div class="card-header">
+            <h1 class="form-title">Your Health, Our Priority</h1>
+        </div>
+        <div class="card-body">
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">MediTask helps you manage medical appointments, reminders, and health tracking with ease. Stay connected with your care providers anytime, anywhere.</p>
+            <button id="startBtn" class="btn btn-primary btn-lg">Get Started</button>
+        </div>
     </div>
-    <div class="hero-img">
-        <img src="" alt="Medical Care">
+    
+    <div class="card">
+        <div class="card-header">
+            <h5>Features</h5>
+        </div>
+        <div class="card-body" id="featuresSection">
+            <!-- Features will be populated by JavaScript -->
+        </div>
     </div>
-</section>
-<section class="features" id="featuresSection">
-</section>
+</div>
 {% endblock %}

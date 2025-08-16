@@ -1,43 +1,64 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 class="page-title">What would you like to explore?</h2>
-    <section class="features">
-        <a href="doctors.html" id="selectDoctors">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-user-md"></i>
-                </div>
-                <h3>Doctors</h3>
-                <p>Find healthcare professionals by specialty, location, and availability.</p>
+<div class="main-content">
+    <h1 class="form-title">What would you like to explore?</h1>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5>Available Services</h5>
+        </div>
+        <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <a href="{{ url_for('doctors') }}" id="selectDoctors" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-user-md"></i>
+                            <h5>Doctors</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Find healthcare professionals by specialty, location, and availability.</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="{{ url_for('symptom_checker') }}" id="selectSymptoms" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-stethoscope"></i>
+                            <h5>Symptoms</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Search common symptoms to understand possible causes.</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="{{ url_for('chatbot') }}" id="selectChatbot" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-robot"></i>
+                            <h5>AI Chatbot</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Ask health questions and get guidance from our AI assistant.</p>
+                        </div>
+                    </div>
+                </a>
+                
+                <a href="{{ url_for('reminders') }}" id="selectReminders" style="text-decoration: none; color: inherit;">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-bell"></i>
+                            <h5>Reminders</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Set medication and appointment reminders to stay on track.</p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </a>
-        <a href="symptoms.html" id="selectSymptoms">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-stethoscope"></i>
-                </div>
-                <h3>Symptoms</h3>
-                <p>Search common symptoms to understand possible causes.</p>
-            </div>
-        </a>
-        <a href="#" id="selectChatbot">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <h3>AI Chatbot</h3>
-                <p>Ask health questions and get guidance from our AI assistant.</p>
-            </div>
-        </a>
-        <a href="reminders.html" id="selectReminders">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-bell"></i>
-                </div>
-                <h3>Reminders</h3>
-                <p>Set medication and appointment reminders to stay on track.</p>
-            </div>
-        </a>
-    </section>
+        </div>
+    </div>
+</div>
 {% endblock %}
