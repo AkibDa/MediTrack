@@ -14,14 +14,37 @@
     <nav>
         <h1>MediTask</h1>
         <ul>
-            <li><a id="home" href="/">Home</a></li>
-            {% if session.get('user') %}
-              <li><a href="/explore">Services</a></li>
-              <li><a href="/logout">Logout</a></li>
-            {% else %}
-              <li><a id="login" href="/login">Login</a></li>
-              <li><a href="/register" id="register">Register</a></li>
-            {% endif %}
+          <li>
+            <a id="home" href="{{ url_for('index') }}" 
+               class="{% if request.path == url_for('index') %}active{% endif %}">
+               Home
+            </a>
+          </li>
+          
+          {% if session.get('user') %}
+            <li>
+              <a id="explore" href="{{ url_for('explore') }}" 
+                 class="{% if request.path == url_for('explore') %}active{% endif %}">
+                 Services
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('logout') }}">Logout</a>
+            </li>
+          {% else %}
+            <li>
+              <a id="login" href="{{ url_for('login') }}" 
+                 class="{% if request.path == url_for('login') %}active{% endif %}">
+                 Login
+              </a>
+            </li>
+            <li>
+              <a id="register" href="{{ url_for('register') }}" 
+                 class="{% if request.path == url_for('register') %}active{% endif %}">
+                 Register
+              </a>
+            </li>
+          {% endif %}
         </ul>
     </nav>
     

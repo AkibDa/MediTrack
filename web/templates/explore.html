@@ -4,61 +4,62 @@
 <div class="main-content">
     <h1 class="form-title">What would you like to explore?</h1>
     
-    <div class="card">
-        <div class="card-header">
-            <h5>Available Services</h5>
-        </div>
-        <div class="card-body">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                <a href="{{ url_for('doctors') }}" id="selectDoctors" style="text-decoration: none; color: inherit;">
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fas fa-user-md"></i>
-                            <h5>Doctors</h5>
-                        </div>
-                        <div class="card-body">
-                            <p>Find healthcare professionals by specialty, location, and availability.</p>
-                        </div>
-                    </div>
-                </a>
-                
-                <a href="{{ url_for('symptom_checker') }}" id="selectSymptoms" style="text-decoration: none; color: inherit;">
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fas fa-stethoscope"></i>
-                            <h5>Symptoms</h5>
-                        </div>
-                        <div class="card-body">
-                            <p>Search common symptoms to understand possible causes.</p>
-                        </div>
-                    </div>
-                </a>
-                
-                <a href="{{ url_for('chatbot') }}" id="selectChatbot" style="text-decoration: none; color: inherit;">
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fas fa-robot"></i>
-                            <h5>AI Chatbot</h5>
-                        </div>
-                        <div class="card-body">
-                            <p>Ask health questions and get guidance from our AI assistant.</p>
-                        </div>
-                    </div>
-                </a>
-                
-                <a href="{{ url_for('reminders') }}" id="selectReminders" style="text-decoration: none; color: inherit;">
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fas fa-bell"></i>
-                            <h5>Reminders</h5>
-                        </div>
-                        <div class="card-body">
-                            <p>Set medication and appointment reminders to stay on track.</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+        
+        <!-- Doctors -->
+        <a href="{{ url_for('doctors') }}" class="service-card">
+            <i class="fas fa-user-md fa-2x"></i>
+            <h5>Doctors</h5>
+            <p>Find healthcare professionals by specialty, location, and availability.</p>
+        </a>
+        
+        <!-- Symptoms -->
+        <a href="{{ url_for('symptom_checker') }}" class="service-card">
+            <i class="fas fa-stethoscope fa-2x"></i>
+            <h5>Symptoms</h5>
+            <p>Search common symptoms to understand possible causes.</p>
+        </a>
+        
+        <!-- Chatbot -->
+        <a href="{{ url_for('chatbot_page') }}" class="service-card">
+            <i class="fas fa-robot fa-2x"></i>
+            <h5>AI Chatbot</h5>
+            <p>Ask health questions and get guidance from our AI assistant.</p>
+        </a>
+        
+        <!-- Reminders -->
+        <a href="{{ url_for('reminders') }}" class="service-card">
+            <i class="fas fa-bell fa-2x"></i>
+            <h5>Reminders</h5>
+            <p>Set medication and appointment reminders to stay on track.</p>
+        </a>
+        
     </div>
 </div>
+
+<style>
+.service-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+    border-radius: 12px;
+    background: #fff;
+    color: inherit;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.service-card i {
+    margin-bottom: 10px;
+    color: #007bff; /* change accent color as needed */
+}
+</style>
 {% endblock %}
