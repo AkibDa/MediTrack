@@ -34,7 +34,7 @@ const featuresSection = document.getElementById("featuresSection");
 if (featuresSection) {
   // Add a header showing the number of available features
   const featuresHeader = document.createElement("div");
-  featuresHeader.style.cssText = "text-align: center; margin-bottom: 2rem; color: #666;";
+  featuresHeader.style.cssText = "text-align: center; margin-bottom: 2rem; color: white;";
   featuresHeader.innerHTML = `<p>Discover ${featuresData.length} powerful health management tools</p>`;
   featuresSection.appendChild(featuresHeader);
   
