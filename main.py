@@ -111,35 +111,74 @@ DOCTORS_DB = pd.DataFrame([
 # Reminders functionality
 REMINDERS_CSV = "reminders.csv"
 
-def load_reminders():
-    try:
-        if os.path.exists(REMINDERS_CSV):
-            df = pd.read_csv(REMINDERS_CSV)
-            return df
-        return pd.DataFrame(columns=["when_date", "when_time", "type", "text"])
-    except Exception:
-        return pd.DataFrame(columns=["when_date", "when_time", "type", "text"])
+import pandas as pd
+import os
 
-def save_reminders(df):
-    df.to_csv(REMINDERS_CSV, index=False)
+DOCTOR_CSV = "doctor_database.csv"   
+
+def load_doctors():
+    try:
+        if os.path.exists(DOCTOR_CSV):
+            df = pd.read_csv(DOCTOR_CSV)
+            return df
+        return pd.DataFrame(columns=["doctor_name", "specialization", "city", "phone_number"])
+    except Exception:
+        return pd.DataFrame(columns=["doctor_name", "specialization", "city", "phone_number"])
+
+def save_doctors(df):
+    df.to_csv(DOCTOR_CSV, index=False)
+
+# Example use
+if __name__ == "__main__":
+    doctors = load_doctors()
+    print(doctors.head())   # show first 5 doctors
+
 
 # Chatbot
-def chatbot_reply(user_msg: str) -> str:
-    msg = (user_msg or "").lower()
-    if any(k in msg for k in ["fever", "cough", "cold"]):
-        return ("Mild fever/cough is often viral. Rest, fluids, and paracetamol (if suitable) may help. "
-                "Seek care if fever > 3 days or severe symptoms. ⚠️ Not medical advice.")
-    if any(k in msg for k in ["chest pain", "breath", "shortness"]):
-        return ("Chest pain or shortness of breath can be serious. Please seek urgent medical attention. "
-                "⚠️ Not medical advice.")
-    if "diabetes" in msg:
-        return ("Monitor blood sugar, balanced diet, regular exercise. Consult an endocrinologist for management. "
-                "⚠️ Not medical advice.")
-    if "asthma" in msg or "wheezing" in msg:
-        return ("Avoid triggers and keep your inhaler accessible. Consult a pulmonologist for a plan. "
-                "⚠️ Not medical advice.")
-    return ("I'm a demo assistant. For specific medical guidance, consult a professional. "
-            "Tell me symptoms or ask about urgency. ⚠️ Not medical advice.")
+@app.route("/chatbot", methods=["POST"])
+def chatbot():
+    user_input = request.json.get("message", "").lower()
+
+    response = ""
+
+    # Simple logic
+    if "medicine" in user_input or "drug" in user_input:
+        med_name = user_input.replace("medicine", "").replace("drug", "").strip()
+        if med_name:
+            response = get_medicine_info(med_name)
+        else:
+            response = "Please tell me the medicine name you want to know about."
+
+    elif "doctor" in user_input:
+        # extract speciality
+        speciality = None
+        city = None
+
+        for spec in doctors_df["Speciality"].unique():
+            if spec.lower() in user_input:
+                speciality = spec
+                break
+
+        for c in doctors_df["City"].unique():
+            if str(c).lower() in user_input:
+                city = c
+                break
+
+        if speciality:
+            doctor_list = suggest_doctor(speciality, city)
+            if doctor_list:
+                response = f"Here are some {speciality} doctors:\n" + "\n".join(
+                    [f"{doc['Doctor Name']} ({doc['City']}) - {doc['Contact']}" for doc in doctor_list]
+                )
+            else:
+                response = f"Sorry, I couldn't find any {speciality} doctors."
+        else:
+            response = "Please tell me the speciality of the doctor you are looking for."
+
+    else:
+        response = "I'm your medical assistant. You can ask me about medicines or doctors."
+
+    return jsonify({"reply": response})
 
 # Initialize data on first request
 def initialize_data():
