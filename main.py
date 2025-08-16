@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
@@ -279,6 +279,53 @@ def chatbot():
 @app.route('/explore')
 def explore():
     return render_template('explore.html')
+
+# Auth routes
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        # For demo purposes, accept any login
+        # In production, you'd want proper authentication
+        if email and password:
+            session['user'] = email
+            flash('Logged in successfully!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Please fill in all fields!', 'error')
+    
+    return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password1 = request.form.get('password1')
+        password2 = request.form.get('password2')
+        
+        if not all([username, email, password1, password2]):
+            flash('Please fill in all fields!', 'error')
+        elif password1 != password2:
+            flash('Passwords do not match!', 'error')
+        elif len(password1) < 6:
+            flash('Password must be at least 6 characters!', 'error')
+        else:
+            # For demo purposes, just log them in
+            # In production, you'd want to save to database
+            session['user'] = email
+            flash('Account created successfully!', 'success')
+            return redirect(url_for('index'))
+    
+    return render_template('register.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    flash('Logged out successfully!', 'success')
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)

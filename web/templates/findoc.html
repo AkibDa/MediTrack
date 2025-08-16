@@ -4,34 +4,40 @@
 <div class="main-content">
     <h1 class="form-title">🏥 Find Specialists & Hospitals</h1>
     
-    <div class="form-container">
-        <form method="POST" action="{{ url_for('doctors') }}">
-            <div class="form-group">
-                <label for="city" class="form-label">Select your city:</label>
-                <select class="form-select" id="city" name="city">
-                    {% for city_option in cities %}
-                        <option value="{{ city_option }}" {% if city_option == selected_city %}selected{% endif %}>{{ city_option }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="specialization" class="form-label">Select specialization:</label>
-                <select class="form-select" id="specialization" name="specialization">
-                    {% for spec_option in specializations %}
-                        <option value="{{ spec_option }}" {% if spec_option == selected_spec %}selected{% endif %}>{{ spec_option }}</option>
-                    {% endfor %}
-                </select>
-                <div class="form-text">Suggested based on last prediction: <strong>{{ suggested_spec }}</strong></div>
-            </div>
-            
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="use_suggested" name="use_suggested" value="true" checked>
-                <label class="form-check-label" for="use_suggested">Use suggested specialization</label>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+    <div class="hero">
+        <div class="hero-text">
+            <form method="POST" action="{{ url_for('doctors') }}" style="max-width: 500px; margin: 0 auto;">
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="city" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Select your city:</label>
+                    <select id="city" name="city" style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
+                        {% for city_option in cities %}
+                            <option value="{{ city_option }}" {% if city_option == selected_city %}selected{% endif %}>{{ city_option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="specialization" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Select specialization:</label>
+                    <select id="specialization" name="specialization" style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
+                        {% for spec_option in specializations %}
+                            <option value="{{ spec_option }}" {% if spec_option == selected_spec %}selected{% endif %}>{{ spec_option }}</option>
+                        {% endfor %}
+                    </select>
+                    <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">Suggested based on last prediction: <strong>{{ suggested_spec }}</strong></div>
+                </div>
+                
+                <div style="margin-bottom: 2rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="use_suggested" name="use_suggested" value="true" checked style="width: auto;">
+                        <span style="font-weight: 500; color: #333;">Use suggested specialization</span>
+                    </label>
+                </div>
+                
+                <button type="submit" style="width: 100%; background: #2E86C1; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: 0.3s;">
+                    Search
+                </button>
+            </form>
+        </div>
     </div>
     
     <div class="card">

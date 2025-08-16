@@ -11,29 +11,35 @@
         <div class="card-body">
             <form method="POST" action="{{ url_for('reminders') }}">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                    <div class="form-group">
-                        <label for="reminder_date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="reminder_date" name="reminder_date" required>
+                    <div style="margin-bottom: 1rem;">
+                        <label for="reminder_date" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Date</label>
+                        <input type="date" id="reminder_date" name="reminder_date" required 
+                               style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
                     </div>
-                    <div class="form-group">
-                        <label for="reminder_time" class="form-label">Time</label>
-                        <input type="time" class="form-control" id="reminder_time" name="reminder_time" required>
+                    <div style="margin-bottom: 1rem;">
+                        <label for="reminder_time" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Time</label>
+                        <input type="time" id="reminder_time" name="reminder_time" required 
+                               style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
                     </div>
-                    <div class="form-group">
-                        <label for="reminder_type" class="form-label">Type</label>
-                        <select class="form-select" id="reminder_type" name="reminder_type" required>
+                    <div style="margin-bottom: 1rem;">
+                        <label for="reminder_type" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Type</label>
+                        <select id="reminder_type" name="reminder_type" required 
+                                style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
                             <option value="Medicine">Medicine</option>
                             <option value="Appointment">Appointment</option>
                             <option value="Test">Test</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="reminder_text" class="form-label">Reminder Text</label>
-                        <input type="text" class="form-control" id="reminder_text" name="reminder_text" placeholder="e.g., Take 500mg paracetamol" required>
+                    <div style="margin-bottom: 1rem;">
+                        <label for="reminder_text" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Reminder Text</label>
+                        <input type="text" id="reminder_text" name="reminder_text" placeholder="e.g., Take 500mg paracetamol" required 
+                               style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
                     </div>
                 </div>
-                <button type="submit" name="add_reminder" class="btn btn-primary">Add Reminder</button>
+                <button type="submit" name="add_reminder" style="background: #2E86C1; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: 0.3s;">
+                    Add Reminder
+                </button>
             </form>
         </div>
     </div>
