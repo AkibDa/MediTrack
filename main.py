@@ -106,7 +106,9 @@ def predict_disease(symptoms_list, df, df_precaution, df_description):
     return results, None
 
 # Configuration
-DOCTORS_DB = "doctor_database.csv"
+DOCTORS_DB = "doctor_database_1.csv"
+df = pd.read_csv(DOCTORS_DB) if os.path.exists(DOCTORS_DB) else pd.DataFrame(columns=["name", "specialization", "city", "phone", "rating"])
+# Default Cities
 DEFAULT_CITIES = ["Kolkata", "Delhi", "Mumbai", "Bengaluru", "Hyderabad", "Chennai"]
 
 # Disease to Specialist Mapping
@@ -130,24 +132,27 @@ DISEASE_SPECIALIST_MAP = {
     'thyroid': 'Endocrinologist',
 }
 
-# Initialize Doctor Database
+# Initialize Doctor Database - Modified to work with your CSV
 def init_doctor_db():
     if not os.path.exists(DOCTORS_DB):
-        default_doctors = [
-            {"name": "CityCare Hospital", "specialization": "General Physician", "city": "Kolkata", "phone": "033-4000-1000", "rating": 4.2},
-            {"name": "Apollo Multi-Speciality", "specialization": "Cardiologist", "city": "Kolkata", "phone": "033-3500-2222", "rating": 4.5},
-            {"name": "Fortis Health", "specialization": "Neurologist", "city": "Kolkata", "phone": "033-3344-7788", "rating": 4.3},
-            {"name": "MedLife Clinic", "specialization": "Pulmonologist", "city": "Delhi", "phone": "011-4100-9090", "rating": 4.1},
-            {"name": "Wellness Point", "specialization": "Endocrinologist", "city": "Delhi", "phone": "011-2255-6677", "rating": 3.9},
-            {"name": "Health+ Clinic", "specialization": "Dermatologist", "city": "Mumbai", "phone": "022-4400-8800", "rating": 4.0},
-            {"name": "Sunrise Hospital", "specialization": "General Physician", "city": "Bengaluru", "phone": "080-4455-9900", "rating": 4.4},
-            {"name": "Care & Cure", "specialization": "Pulmonologist", "city": "Hyderabad", "phone": "040-6677-7788", "rating": 4.2},
-        ]
-        pd.DataFrame(default_doctors).to_csv(DOCTORS_DB, index=False)
+        # Create a DataFrame with the expected columns if file doesn't exist
+        pd.DataFrame(columns=["name", "specialization", "city", "phone", "rating"]).to_csv(DOCTORS_DB, index=False)
+    else:
+        # Ensure existing CSV has the required columns
+        df = pd.read_csv(DOCTORS_DB)
+        required_cols = ["name", "specialization", "city", "phone"]
+        for col in required_cols:
+            if col not in df.columns:
+                raise ValueError(f"CSV file is missing required column: {col}")
+        
+        # Add rating column if missing
+        if "rating" not in df.columns:
+            df["rating"] = 0.0
+            df.to_csv(DOCTORS_DB, index=False)
 
-# Data Loading Functions
+# Data Loading Functions - Modified for your CSV
 def load_doctors():
-    """Load doctor data from CSV with validation"""
+    """Load doctor data from your CSV file"""
     try:
         if os.path.exists(DOCTORS_DB):
             df = pd.read_csv(DOCTORS_DB)
@@ -156,6 +161,11 @@ def load_doctors():
             for col in required_cols:
                 if col not in df.columns:
                     raise ValueError(f"Missing required column: {col}")
+            
+            # Add rating if missing
+            if "rating" not in df.columns:
+                df["rating"] = 0.0
+                
             return df
         return pd.DataFrame(columns=["name", "specialization", "city", "phone", "rating"])
     except Exception as e:
@@ -163,41 +173,103 @@ def load_doctors():
         return pd.DataFrame(columns=["name", "specialization", "city", "phone", "rating"])
 
 def save_doctors(df):
-    """Save doctor data to CSV"""
+    """Save doctor data to your CSV"""
     try:
         df.to_csv(DOCTORS_DB, index=False)
     except Exception as e:
         print(f"Error saving doctors: {str(e)}")
 
-# Search Functions
+# Search Functions (unchanged)
 def find_doctors(city=None, specialization=None, min_rating=None):
-    """
-    Search doctors with filters
-    Returns: DataFrame of matching doctors sorted by rating
-    """
+    """Search doctors with flexible matching"""
     df = load_doctors()
     
+    # Convert all to lowercase for case-insensitive search
+    df['city_lower'] = df['city'].str.lower()
+    df['spec_lower'] = df['specialization'].str.lower()
+    
     # Apply filters
-    if city and city.lower() != "all":
-        df = df[df['city'].str.lower() == city.lower()]
-    if specialization and specialization.lower() != "all":
-        df = df[df['specialization'].str.lower() == specialization.lower()]
+    if city:
+        df = df[df['city_lower'] == city.lower()]
+    if specialization:
+        df = df[df['spec_lower'] == specialization.lower()]
     if min_rating:
         df = df[df['rating'] >= float(min_rating)]
     
-    # Sort by rating (highest first) and then by name
+    # Clean up
+    df = df.drop(columns=['city_lower', 'spec_lower'])
+    
     return df.sort_values(['rating', 'name'], ascending=[False, True])
 
 def get_unique_specializations():
-    """Get list of all unique specializations"""
     df = load_doctors()
     return sorted(df['specialization'].unique().tolist())
 
 def get_unique_cities():
-    """Get list of all unique cities"""
     df = load_doctors()
     cities = df['city'].unique().tolist()
     return sorted(list(set(cities + DEFAULT_CITIES)))
+
+# Flask Routes (unchanged except for endpoint names)
+@app.route('/doctors', methods=['GET', 'POST'])
+def doctors():
+    init_doctor_db()
+    
+    # Get form data with proper defaults
+    city = request.form.get('city', '').strip()
+    disease = request.form.get('disease', '').strip().lower()
+    specialization = request.form.get('specialization', '').strip()
+    use_suggested = request.form.get('use_suggested', 'false') == 'true'
+    
+    # Auto-suggest specialization if disease is selected
+    suggested_spec = ""
+    if disease and use_suggested:
+        suggested_spec = DISEASE_SPECIALIST_MAP.get(disease, "")
+        if suggested_spec:
+            specialization = suggested_spec
+    
+    # Perform search if any criteria provided
+    doctors = []
+    search_performed = bool(city or specialization or disease)
+    
+    if search_performed:
+        doctors_df = find_doctors(
+            city=city if city else None,
+            specialization=specialization if specialization else None
+        )
+        doctors = doctors_df.to_dict('records')
+    
+    # Prepare context with all needed variables
+    context = {
+        'cities': get_unique_cities(),
+        'disease_specialist_map': DISEASE_SPECIALIST_MAP,
+        'specializations': get_unique_specializations(),
+        'doctors': doctors,
+        'selected_city': city,
+        'selected_spec': specialization,
+        'suggested_spec': suggested_spec,
+        'search_performed': search_performed
+    }
+    
+    return render_template('findoc.html', **context)
+
+@app.route('/doctors/add', methods=['POST'])
+def add_doctor():
+    try:
+        data = {
+            'name': request.form['name'],
+            'specialization': request.form['specialization'],
+            'city': request.form['city'],
+            'phone': request.form['phone'],
+            'rating': float(request.form.get('rating', 0))
+        }
+        df = load_doctors()
+        new_entry = pd.DataFrame([data])
+        updated = pd.concat([df, new_entry], ignore_index=True)
+        save_doctors(updated)
+        return redirect(url_for('doctors'))
+    except Exception as e:
+        return f"Error adding doctor: {str(e)}", 400
 
 # -----------------------------
 # Reminders
@@ -325,61 +397,6 @@ def symptom_checker():
     
     return render_template('symptom_checker.html', symptoms=app.ALL_SYMPTOMS)
 
-@app.route('/doctors', methods=['GET', 'POST'])
-def doctors():
-    """Main doctor search page"""
-    # Initialize database if needed
-    init_doctor_db()
-    
-    # Get form data
-    city = request.form.get('city', '')
-    disease = request.form.get('disease', '')
-    specialization = request.form.get('specialization', '')
-    use_suggested = request.form.get('use_suggested') == 'true'
-    
-    # Auto-set specialization if disease is selected
-    if disease and use_suggested:
-        specialization = DISEASE_SPECIALIST_MAP.get(disease.lower(), '')
-    
-    # Perform search if any criteria provided
-    doctors = None
-    if city or specialization:
-        doctors = find_doctors(city=city, specialization=specialization)
-    
-    # Prepare data for template
-    context = {
-        'cities': get_unique_cities(),
-        'disease_specialist_map': DISEASE_SPECIALIST_MAP,
-        'specializations': get_unique_specializations(),
-        'doctors': doctors.to_dict('records') if doctors is not None else None,
-        'selected_city': city,
-        'selected_spec': specialization,
-        'suggested_spec': DISEASE_SPECIALIST_MAP.get(disease.lower(), '') if disease else ''
-    }
-    
-    return render_template('findoc.html', **context)
-
-@app.route('/doctors/add', methods=['POST'])
-def add_doctor():
-    """Add new doctor to database"""
-    try:
-        data = {
-            'name': request.form['name'],
-            'specialization': request.form['specialization'],
-            'city': request.form['city'],
-            'phone': request.form['phone'],
-            'rating': float(request.form.get('rating', 0))
-        }
-        
-        df = load_doctors()
-        new_entry = pd.DataFrame([data])
-        updated = pd.concat([df, new_entry], ignore_index=True)
-        save_doctors(updated)
-        
-        return redirect(url_for('doctors_search'))
-    except Exception as e:
-        return f"Error adding doctor: {str(e)}", 400
-
 @app.route('/reminders', methods=['GET', 'POST'])
 def reminders():
     reminders_df = load_reminders()
@@ -477,4 +494,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True, port=7000)
+    app.run(debug=True, port=3000)

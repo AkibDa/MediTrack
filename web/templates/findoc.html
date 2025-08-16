@@ -121,12 +121,14 @@
     </div>
     
     <!-- Results -->
-    <div class="card">
-        {% if doctors %}
-            <div class="card-header">
-                <h3>Search Results</h3>
-            </div>
-            <div class="card-body">
+    <!-- Replace the results card section with this: -->
+<div class="card">
+    {% if search_performed %}
+        <div class="card-header">
+            <h3>Search Results</h3>
+        </div>
+        <div class="card-body">
+            {% if doctors %}
                 <div class="table-container">
                     <table class="results-table">
                         <thead>
@@ -135,6 +137,9 @@
                                 <th>Specialization</th>
                                 <th>City</th>
                                 <th>Phone</th>
+                                {% if doctors[0].rating is defined %}
+                                <th>Rating</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody>
@@ -144,22 +149,71 @@
                                     <td>{{ doctor.specialization }}</td>
                                     <td>{{ doctor.city }}</td>
                                     <td>{{ doctor.phone }}</td>
+                                    {% if doctor.rating is defined %}
+                                    <td>{{ "%.1f"|format(doctor.rating) }} ★</td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            </div>
-        {% else %}
-            <div class="card-header">
-                <h3>Search Results</h3>
-            </div>
-            <div class="card-body">
-                <p>No doctors found matching your criteria.</p>
-            </div>
-        {% endif %}
-    </div>
+            {% else %}
+                <div class="no-results">
+                    <p>No doctors found matching your criteria.</p>
+                    <div class="suggestions">
+                        <p>Try these suggestions:</p>
+                        <ul>
+                            <li>Broaden your search by removing some filters</li>
+                            <li>Check the spelling of your search terms</li>
+                            <li>Try a nearby city</li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
 </div>
+</div>
+
+<style>
+    /* Add to your stylesheet */
+.no-results {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.no-results p {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.suggestions {
+    margin-top: 15px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 5px;
+    border-left: 4px solid #ffc107;
+}
+
+.suggestions ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.suggestions li {
+    margin-bottom: 5px;
+}
+
+.results-table th, .results-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.results-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}f
+</style>
 
 <script>
 // Auto-fill specialization when disease is chosen
