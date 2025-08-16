@@ -2,67 +2,148 @@
 
 {% block content %}
 <div class="main-content">
-    <h1 class="form-title">🏥 Find Specialists & Hospitals</h1>
+    <h1 class="form-title white-gradient-text">🏥 Find Specialists & Hospitals</h1>
     
     <div class="hero">
         <div class="hero-text">
-            <form method="POST" action="{{ url_for('doctors') }}" style="max-width: 500px; margin: 0 auto;">
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="city" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Select your city:</label>
-                    <select id="city" name="city" style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
-                        {% for city_option in cities %}
-                            <option value="{{ city_option }}" {% if city_option == selected_city %}selected{% endif %}>{{ city_option }}</option>
-                        {% endfor %}
-                    </select>
+            <form method="POST" action="{{ url_for('doctors') }}" class="search-form">
+                
+                <!-- City Dropdown -->
+                <div class="form-group">
+                    <label for="city" class="form-label">Select your city:</label>
+                    <div class="custom-dropdown">
+                        <div class="dropdown-header" onclick="toggleDropdown('city')">
+                            <span class="selected-text" id="city-selected">-- Select City --</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </div>
+                        <div class="dropdown-content" id="city-dropdown">
+                            <div class="search-box">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" placeholder="Search cities..." class="search-input" onkeyup="filterOptions('city')">
+                            </div>
+                            <div class="options-list">
+                                {% if cities %}
+                                    {% for city_option in cities %}
+                                        <div class="option-item" data-value="{{ city_option }}" onclick="selectOption('city', '{{ city_option }}')">
+                                            {{ city_option }}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="option-item" data-value="">No cities available</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <input type="hidden" id="city" name="city" value="">
+                    </div>
+                </div>
+
+                <!-- Disease Dropdown -->
+                <div class="form-group">
+                    <label for="disease" class="form-label">Select disease:</label>
+                    <div class="custom-dropdown">
+                        <div class="dropdown-header" onclick="toggleDropdown('disease')">
+                            <span class="selected-text" id="disease-selected">-- Select Disease --</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </div>
+                        <div class="dropdown-content" id="disease-dropdown">
+                            <div class="search-box">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" placeholder="Search diseases..." class="search-input" onkeyup="filterOptions('disease')">
+                            </div>
+                            <div class="options-list">
+                                <div class="option-item" data-value="" onclick="selectOption('disease', '')">
+                                    -- Select Disease --
+                                </div>
+                                {% if disease_specialist_map %}
+                                    {% for disease, spec in disease_specialist_map.items() %}
+                                        <div class="option-item" data-value="{{ disease }}" onclick="selectOption('disease', '{{ disease }}')">
+                                            {{ disease.replace("_", " ").title() }}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="option-item" data-value="">No diseases available</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <input type="hidden" id="disease" name="disease" value="">
+                    </div>
                 </div>
                 
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="specialization" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Select specialization:</label>
-                    <select id="specialization" name="specialization" style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
-                        {% for spec_option in specializations %}
-                            <option value="{{ spec_option }}" {% if spec_option == selected_spec %}selected{% endif %}>{{ spec_option }}</option>
-                        {% endfor %}
-                    </select>
-                    <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">Suggested based on last prediction: <strong>{{ suggested_spec }}</strong></div>
+                <!-- Specialization Dropdown -->
+                <div class="form-group">
+                    <label for="specialization" class="form-label">Select specialization:</label>
+                    <div class="custom-dropdown">
+                        <div class="dropdown-header" onclick="toggleDropdown('specialization')">
+                            <span class="selected-text" id="specialization-selected">-- Select Specialization --</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </div>
+                        <div class="dropdown-content" id="specialization-dropdown">
+                            <div class="search-box">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" placeholder="Search specializations..." class="search-input" onkeyup="filterOptions('specialization')">
+                            </div>
+                            <div class="options-list">
+                                {% if specializations %}
+                                    {% for spec_option in specializations %}
+                                        <div class="option-item" data-value="{{ spec_option }}" onclick="selectOption('specialization', '{{ spec_option }}')">
+                                            {{ spec_option }}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="option-item" data-value="">No specializations available</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <input type="hidden" id="specialization" name="specialization" value="">
+                    </div>
+                    {% if suggested_spec %}
+                        <div class="suggestion-text">
+                            Suggested based on last prediction: <strong>{{ suggested_spec }}</strong>
+                        </div>
+                    {% endif %}
                 </div>
                 
-                <div style="margin-bottom: 2rem;">
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                        <input type="checkbox" id="use_suggested" name="use_suggested" value="true" checked style="width: auto;">
-                        <span style="font-weight: 500; color: #333;">Use suggested specialization</span>
+                <!-- Use suggested checkbox -->
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="use_suggested" name="use_suggested" value="true" checked>
+                        <span class="checkmark"></span>
+                        <span class="checkbox-text">Use suggested specialization</span>
                     </label>
                 </div>
                 
-                <button type="submit" style="width: 100%; background: #2E86C1; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: 0.3s;">
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
                     Search
                 </button>
             </form>
         </div>
     </div>
     
+    <!-- Results -->
     <div class="card">
         {% if doctors %}
             <div class="card-header">
                 <h3>Search Results</h3>
             </div>
             <div class="card-body">
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse;">
+                <div class="table-container">
+                    <table class="results-table">
                         <thead>
-                            <tr style="background-color: #f8f9fa; border-bottom: 1px solid #dee2e6;">
-                                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Name</th>
-                                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Specialization</th>
-                                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">City</th>
-                                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Phone</th>
+                            <tr>
+                                <th>Name</th>
+                                <th>Specialization</th>
+                                <th>City</th>
+                                <th>Phone</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for doctor in doctors %}
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 12px;">{{ doctor.name }}</td>
-                                    <td style="padding: 12px;">{{ doctor.specialization }}</td>
-                                    <td style="padding: 12px;">{{ doctor.city }}</td>
-                                    <td style="padding: 12px;">{{ doctor.phone }}</td>
+                                <tr>
+                                    <td>{{ doctor.name }}</td>
+                                    <td>{{ doctor.specialization }}</td>
+                                    <td>{{ doctor.city }}</td>
+                                    <td>{{ doctor.phone }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -79,4 +160,101 @@
         {% endif %}
     </div>
 </div>
-{% endblock %}  
+
+<script>
+// Auto-fill specialization when disease is chosen
+const diseaseToSpec = {{ disease_specialist_map | tojson if disease_specialist_map else '{}' }};
+
+// Dropdown functionality
+function toggleDropdown(type) {
+    const dropdown = document.getElementById(type + '-dropdown');
+    const allDropdowns = document.querySelectorAll('.dropdown-content');
+    
+    // Close all other dropdowns
+    allDropdowns.forEach(dd => {
+        if (dd !== dropdown) {
+            dd.classList.remove('show');
+        }
+    });
+    
+    // Toggle current dropdown
+    dropdown.classList.toggle('show');
+    
+    // Update arrow rotation
+    const arrow = dropdown.previousElementSibling.querySelector('.dropdown-arrow');
+    if (dropdown.classList.contains('show')) {
+        arrow.style.transform = 'rotate(180deg)';
+    } else {
+        arrow.style.transform = 'rotate(0deg)';
+    }
+}
+
+function selectOption(type, value) {
+    const selectedText = document.getElementById(type + '-selected');
+    const hiddenInput = document.getElementById(type);
+    const dropdown = document.getElementById(type + '-dropdown');
+    
+    selectedText.textContent = value || '-- Select ' + type.charAt(0).toUpperCase() + type.slice(1) + ' --';
+    hiddenInput.value = value;
+    
+    // Close dropdown
+    dropdown.classList.remove('show');
+    
+    // Reset arrow rotation
+    const arrow = dropdown.previousElementSibling.querySelector('.dropdown-arrow');
+    arrow.style.transform = 'rotate(0deg)';
+    
+    // Auto-fill specialization when disease is chosen
+    if (type === 'disease' && value && diseaseToSpec && diseaseToSpec[value.toLowerCase()]) {
+        selectOption('specialization', diseaseToSpec[value.toLowerCase()]);
+    }
+}
+
+function filterOptions(type) {
+    const searchInput = document.querySelector(`#${type}-dropdown .search-input`);
+    const optionsList = document.querySelector(`#${type}-dropdown .options-list`);
+    const options = optionsList.querySelectorAll('.option-item');
+    const searchTerm = searchInput.value.toLowerCase();
+    
+    options.forEach(option => {
+        const text = option.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+            option.style.display = 'block';
+        } else {
+            option.style.display = 'none';
+        }
+    });
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.custom-dropdown')) {
+        const allDropdowns = document.querySelectorAll('.dropdown-content');
+        allDropdowns.forEach(dd => {
+            dd.classList.remove('show');
+        });
+        
+        // Reset all arrows
+        const allArrows = document.querySelectorAll('.dropdown-arrow');
+        allArrows.forEach(arrow => {
+            arrow.style.transform = 'rotate(0deg)';
+        });
+    }
+});
+
+// Initialize form with selected values if they exist
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial values if they exist
+    const selectedCity = '{{ selected_city if selected_city else "" }}';
+    const selectedSpec = '{{ selected_spec if selected_spec else "" }}';
+    
+    if (selectedCity && selectedCity !== 'None' && selectedCity !== '') {
+        selectOption('city', selectedCity);
+    }
+    
+    if (selectedSpec && selectedSpec !== 'None' && selectedSpec !== '') {
+        selectOption('specialization', selectedSpec);
+    }
+});
+</script>
+{% endblock %}

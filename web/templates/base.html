@@ -7,75 +7,223 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mozilla+Headline:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,800;0,900;1,100;1,200;1,300;1,700;1,800;1,900&family=Ubuntu&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <nav>
-        <h1>MediTask</h1>
-        <ul>
-          <li>
-            <a id="home" href="{{ url_for('index') }}" 
-               class="{% if request.path == url_for('index') %}active{% endif %}">
-               Home
-            </a>
-          </li>
-          
-          {% if session.get('user') %}
-            <li>
-              <a id="explore" href="{{ url_for('explore') }}" 
-                 class="{% if request.path == url_for('explore') %}active{% endif %}">
-                 Services
-              </a>
-            </li>
-            <li>
-              <a href="{{ url_for('logout') }}">Logout</a>
-            </li>
-          {% else %}
-            <li>
-              <a id="login" href="{{ url_for('login') }}" 
-                 class="{% if request.path == url_for('login') %}active{% endif %}">
-                 Login
-              </a>
-            </li>
-            <li>
-              <a id="register" href="{{ url_for('register') }}" 
-                 class="{% if request.path == url_for('register') %}active{% endif %}">
-                 Register
-              </a>
-            </li>
-          {% endif %}
-        </ul>
+    <!-- Background Elements -->
+    <div class="bg-circles">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+        <div class="circle circle-4"></div>
+    </div>
+
+    <!-- Modern Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h1>MediTask</h1>
+            </div>
+            
+            <div class="nav-menu">
+                <ul class="nav-links">
+                    <li>
+                        <a id="home" href="{{ url_for('index') }}" 
+                           class="nav-link {% if request.path == url_for('index') %}active{% endif %}">
+                           <i class="fas fa-home"></i>
+                           <span>Home</span>
+                        </a>
+                    </li>
+                    
+                    {% if session.get('user') %}
+                        <li>
+                            <a id="explore" href="{{ url_for('explore') }}" 
+                               class="nav-link {% if request.path == url_for('explore') %}active{% endif %}">
+                               <i class="fas fa-compass"></i>
+                               <span>Services</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('logout') }}" class="nav-link logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a id="login" href="{{ url_for('login') }}" 
+                               class="nav-link {% if request.path == url_for('login') %}active{% endif %}">
+                               <i class="fas fa-sign-in-alt"></i>
+                               <span>Login</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a id="register" href="{{ url_for('register') }}" 
+                               class="nav-link {% if request.path == url_for('register') %}active{% endif %}">
+                               <i class="fas fa-user-plus"></i>
+                               <span>Register</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
     </nav>
     
-    <!-- Flash Messages -->
-    <div class="flash-messages">
+    <!-- Enhanced Flash Messages -->
+    <div class="flash-messages-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
+                    <div class="flash-message glass-flash {{ category }}">
+                        <div class="flash-icon">
+                            {% if category == 'success' %}
+                                <i class="fas fa-check-circle"></i>
+                            {% elif category == 'error' %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% elif category == 'warning' %}
+                                <i class="fas fa-exclamation-triangle"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flash-content">
+                            <span class="flash-text">{{ message }}</span>
+                        </div>
+                        <button class="flash-close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
     </div>
     
-    {% block content %}{% endblock content %}
-    <footer>
-        &copy; 2025 MediTask. All rights reserved.
+    <!-- Main Content Area -->
+    <main class="main-content">
+        {% block content %}{% endblock content %}
+    </main>
+
+    <!-- Modern Footer -->
+    <footer class="glass-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>MediTask</h3>
+                    <p>Your Health, Our Priority</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="{{ url_for('index') }}">Home</a></li>
+                            <li><a href="{{ url_for('explore') }}">Services</a></li>
+                            <li><a href="{{ url_for('login') }}">Login</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Contact</h4>
+                        <ul>
+                            <li><i class="fas fa-envelope"></i> support@meditask.com</li>
+                            <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 MediTask. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
     </footer>
+
     <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
     <script>
-        // Auto-hide flash messages after 5 seconds
+        // Enhanced Flash Messages with Glassmorphism
         document.addEventListener('DOMContentLoaded', function() {
             const flashMessages = document.querySelectorAll('.flash-message');
+            
             flashMessages.forEach(function(message) {
+                // Auto-hide after 6 seconds
                 setTimeout(function() {
-                    message.style.animation = 'slideOut 0.3s ease-out';
+                    message.classList.add('fade-out');
                     setTimeout(function() {
                         message.remove();
                     }, 300);
-                }, 5000);
+                }, 6000);
+                
+                // Close button functionality
+                const closeBtn = message.querySelector('.flash-close');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function() {
+                        message.classList.add('fade-out');
+                        setTimeout(function() {
+                            message.remove();
+                        }, 300);
+                    });
+                }
             });
+
+            // Mobile menu toggle
+            const mobileToggle = document.querySelector('.mobile-menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            if (mobileToggle && navMenu) {
+                mobileToggle.addEventListener('click', function() {
+                    navMenu.classList.toggle('active');
+                    mobileToggle.classList.toggle('active');
+                });
+            }
+
+            // Smooth scroll for navigation links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href.startsWith('#')) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        // Add scroll effect to navigation
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.glass-nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
         });
     </script>
 </body>
