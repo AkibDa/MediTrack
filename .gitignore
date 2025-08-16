@@ -1,2 +1,4 @@
 .DS_Store
 key.py
+__pycache__/key.cpython-310.pyc
+.env

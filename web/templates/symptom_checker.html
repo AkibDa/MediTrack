@@ -1,93 +1,339 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="main-content">
-    <h1 class="form-title">🔍 Symptom Checker</h1>
-    
-    <div class="card">
-        <div class="card-header">
-            <strong>⚠️ Disclaimer:</strong> This prototype is for educational/demo purposes only and <strong>not</strong> a medical device. Always consult licensed professionals for diagnosis or treatment.
-        </div>
-    </div>
+<div class="main-content container py-4 mx-auto" style="max-width: 800px;">
+    <div class="card border-0 shadow-sm mx-auto">
+        <div class="card-body p-4 text-center">
+            <h1 class="h3 mb-4 text-primary font-weight-bold">🔍 Symptom Checker</h1>
 
-    {% if error %}
-    <div class="card">
-        <div class="card-header" style="background-color: #f8d7da; color: #721c24;">
-            <strong>⚠️ Error:</strong> {{ error }}
-        </div>
-    </div>
-    {% endif %}
-
-    {% if results %}
-    <div class="card">
-        <div class="card-header">
-            <h5>Analysis Results</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Selected Symptoms:</strong> {{ selected_symptoms|join(', ') }}</p>
-            
-            {% for result in results %}
-            <div class="card result-card">
-                <div class="card-header">
-                    <h6>#{{ result.rank }} - {{ result.disease|title }}</h6>
-                </div>
-                <div class="card-body">
-                    <p><strong>Confidence:</strong> {{ result.confidence }}</p>
-                    
-                    {% if result.description %}
-                    <p><strong>Description:</strong> {{ result.description }}</p>
-                    {% endif %}
-                    
-                    {% if result.precautions %}
-                    <div>
-                        <strong>Precautions:</strong>
-                        <ul style="margin-top: 0.5rem; margin-bottom: 0;">
-                            {% for precaution in result.precautions %}
-                            <li>{{ precaution }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
-                </div>
+            <div class="alert alert-light border mb-4 mx-auto" style="max-width: 600px;">
+                <i class="fas fa-info-circle me-2"></i> Select one or more symptoms by typing and choosing from the dropdown.
             </div>
-            {% endfor %}
-            
-            <div style="margin-top: 2rem;">
-                <a href="{{ url_for('doctors') }}" class="btn btn-primary" style="background: #2E86C1; color: white; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 5px; transition: 0.3s; display: inline-block;">
-                    Find Doctors for Treatment
-                </a>
-                <a href="{{ url_for('symptom_checker') }}" class="btn btn-secondary" style="background: #6c757d; color: white; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 5px; transition: 0.3s; display: inline-block; margin-left: 1rem;">
-                    Check Different Symptoms
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
 
-    <div class="card">
-        <div class="card-header">
-            <h5>Select Your Symptoms</h5>
-        </div>
-        <div class="card-body">
-            <form method="POST" action="{{ url_for('symptom_checker') }}">
-                <div class="symptom-grid">
-                    {% for symptom in symptoms %}
-                    <div class="symptom-item">
-                        <input type="checkbox" id="symptom_{{ loop.index }}" name="symptoms" value="{{ symptom }}">
-                        <label for="symptom_{{ loop.index }}">
-                            {{ symptom|replace('_', ' ')|title }}
-                        </label>
+            <form method="POST" action="{{ url_for('symptom_checker') }}" class="mx-auto" style="max-width: 500px;">
+                <div class="form-group text-center">
+                    <label for="symptom-input" class="font-weight-bold text-muted mb-2">Enter Symptoms</label>
+                    
+                    <!-- Container for tags -->
+                    <div id="tags-container" class="tags-container mb-3 d-flex justify-content-center flex-wrap"></div>
+                    
+                    <!-- Input with autocomplete -->
+                    <div class="input-group mx-auto" style="width: 100%;">
+                        <input type="text" id="symptom-input" class="form-control form-control-lg text-center" placeholder="Type a symptom..." autocomplete="off" />
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+                        </div>
                     </div>
-                    {% endfor %}
+                    
+                    <!-- Hidden field to submit symptoms -->
+                    <input type="hidden" name="symptoms" id="symptoms-hidden" />
                 </div>
-                
-                <button type="submit" style="background: #2E86C1; color: white; padding: 1rem 2rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1rem; transition: 0.3s; width: 100%;">
-                    Analyze Symptoms
+
+                <button type="submit" class="btn btn-primary btn-lg mt-3 py-2 mx-auto" style="width: 200px;">
+                    <i class="fas fa-heartbeat me-2"></i> Analyze Symptoms
                 </button>
             </form>
         </div>
     </div>
+
+    {% if results %}
+    <div class="results mt-5 mx-auto" style="max-width: 900px;">
+        <h2 class="mb-4 font-weight-bold text-primary text-center" style="font-size: 2rem;">Possible Conditions</h2>
+        
+        {% for result in results %}
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <h3 class="card-title mb-0 font-weight-bold" style="font-size: 1.8rem;">
+                        {{ result.disease|title }}
+                    </h3>
+                    <span class="badge bg-primary-soft text-primary ml-3 px-3 py-2 rounded-pill" style="font-size: 1.1rem;">
+                        Confidence: {{ result.confidence }}%
+                    </span>
+                </div>
+    
+                {% if result.description %}
+                <div class="bg-light p-4 rounded mb-4" style="font-size: 1.2rem; line-height: 1.6;">
+                    <p class="mb-0">
+                        <strong style="font-size: 1.3rem;">Description:</strong> {{ result.description }}
+                    </p>
+                </div>
+                {% endif %}
+    
+                {% if result.precautions %}
+                <div class="mt-4">
+                    <h4 class="text-muted mb-3" style="font-size: 1.5rem;">
+                        <i class="fas fa-shield-alt me-2"></i> 
+                        {% if result.disease == 'Typhoid' %}Precautions{% else %}Prevention{% endif %}
+                    </h4>
+                    <div class="row">
+                        {% for precaution in result.precautions %}
+                        <div class="col-md-6 mb-3">
+                            <div class="bg-light p-3 rounded d-flex align-items-center" style="font-size: 1.2rem;">
+                                <i class="fas fa-check-circle text-success me-3" style="font-size: 1.3rem;"></i>
+                                <span>{{ precaution }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
 </div>
 
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-soft: #e6f0ff;
+        --border-radius: 12px;
+    }
+    
+    body {
+        background-color: #f8f9fa;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-{% endblock %} 
+    /* Enhanced Typography */
+        .results {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .card-title {
+            letter-spacing: 0.5px;
+        }
+        
+        /* Improved Spacing */
+        .card {
+            margin-bottom: 2rem!important;
+        }
+        
+        .mb-3, .my-3 {
+            margin-bottom: 1.5rem!important;
+        }
+        
+        .mb-4, .my-4 {
+            margin-bottom: 2rem!important;
+        }
+        
+        .p-4 {
+            padding: 2rem!important;
+        }
+        
+        /* Better Contrast */
+        .text-muted {
+            color: #6c757d!important;
+        }
+        
+        .bg-primary-soft {
+            background-color: rgba(67, 97, 238, 0.1)!important;
+        }
+        
+        .bg-light {
+            background-color: #f8f9fa!important;
+        }
+    
+    .card {
+        border-radius: var(--border-radius) !important;
+        border: none;
+    }
+    
+    .tags-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .tag {
+        background: var(--primary);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        font-size: 0.85rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .tag button {
+        background: none;
+        border: none;
+        color: white;
+        margin-left: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+        padding: 0;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .tag button:hover {
+        opacity: 1;
+    }
+    
+    .autocomplete-items {
+        position: absolute;
+        border: 1px solid #e9ecef;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        border-top: none;
+        z-index: 99;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        max-height: 200px;
+        overflow-y: auto;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        width: calc(100% - 30px);
+        max-width: 500px;
+    }
+    
+    .autocomplete-items div {
+        padding: 10px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid #f8f9fa;
+        text-align: left;
+    }
+    
+    .autocomplete-items div:hover {
+        background-color: var(--primary-soft);
+    }
+    
+    .form-control {
+        border-radius: var(--border-radius) !important;
+        height: calc(2.5em + 0.75rem + 2px);
+    }
+    
+    .input-group-text {
+        border-radius: 0 var(--border-radius) var(--border-radius) 0 !important;
+    }
+    
+    .btn-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        border-radius: var(--border-radius);
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+    
+    .bg-primary-soft {
+        background-color: var(--primary-soft);
+    }
+</style>
+
+<script>
+    // (Keep the same JavaScript code as provided in the previous solution)
+    const allSymptoms = {{ symptoms|tojson }};
+    const input = document.getElementById("symptom-input");
+    const tagsContainer = document.getElementById("tags-container");
+    const hiddenInput = document.getElementById("symptoms-hidden");
+    let selectedSymptoms = [];
+
+    // Show suggestions dynamically
+    input.addEventListener("input", function () {
+        const value = this.value.toLowerCase();
+        closeSuggestions();
+
+        if (!value) return;
+
+        const suggestions = allSymptoms.filter(sym => 
+            sym.toLowerCase().includes(value) && !selectedSymptoms.includes(sym)
+        );
+
+        if (suggestions.length === 0) return;
+
+        const dropdown = document.createElement("div");
+        dropdown.setAttribute("id", "autocomplete-list");
+        dropdown.setAttribute("class", "autocomplete-items");
+
+        suggestions.forEach(sym => {
+            const item = document.createElement("div");
+            item.textContent = sym;
+            item.addEventListener("click", () => {
+                addTag(sym);
+                input.value = "";
+                closeSuggestions();
+                input.focus();
+            });
+            dropdown.appendChild(item);
+        });
+
+        const inputGroup = input.closest('.input-group');
+        inputGroup.appendChild(dropdown);
+    });
+
+    function addTag(symptom) {
+        if (selectedSymptoms.includes(symptom)) return;
+
+        selectedSymptoms.push(symptom);
+
+        const tag = document.createElement("div");
+        tag.className = "tag";
+        tag.innerHTML = `${symptom}<button onclick="removeTag('${symptom}')" aria-label="Remove ${symptom}">&times;</button>`;
+        tagsContainer.appendChild(tag);
+
+        updateHiddenInput();
+    }
+
+    function removeTag(symptom) {
+        selectedSymptoms = selectedSymptoms.filter(s => s !== symptom);
+        [...tagsContainer.children].forEach(tag => {
+            if (tag.textContent.includes(symptom)) {
+                tag.remove();
+            }
+        });
+        updateHiddenInput();
+        input.focus();
+    }
+
+    function updateHiddenInput() {
+        hiddenInput.value = selectedSymptoms.join(",");
+    }
+
+    function closeSuggestions() {
+        const dropdown = document.getElementById("autocomplete-list");
+        if (dropdown) dropdown.remove();
+    }
+
+    // Close suggestions when clicking outside
+    document.addEventListener("click", function (e) {
+        if (!input.contains(e.target)) {
+            closeSuggestions();
+        }
+    });
+
+    // Add keyboard support
+    input.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const dropdown = document.getElementById("autocomplete-list");
+            if (dropdown && dropdown.firstChild) {
+                const firstSuggestion = dropdown.firstChild.textContent;
+                addTag(firstSuggestion);
+                input.value = "";
+                closeSuggestions();
+            }
+        }
+    });
+</script>
+
+{% endblock %}

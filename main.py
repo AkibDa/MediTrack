@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from datetime import date, time
+from dotenv import load_dotenv
 import os
-from key import API_KEY
 
 app = Flask(__name__, template_folder='web/templates', static_folder='web/static')
 app.secret_key = 'qwertyuiopasdfghjklzxcvbnm'  # Change this for production
@@ -21,11 +21,41 @@ def load_data():
 
 def get_disease_info(disease, df_precaution, df_description):
     info = {}
-    if disease in df_description.index:
-        info['description'] = df_description.loc[disease]['Description']
-    if disease in df_precaution.index:
-        info['precautions'] = [p for p in df_precaution.loc[disease] if pd.notna(p)]
+
+    # --- Description lookup ---
+    if "Disease" in df_description.columns:
+        desc_row = df_description[df_description["Disease"].str.lower() == disease.lower()]
+        if not desc_row.empty:
+            info['description'] = desc_row['Description'].values[0]
+        else:
+            info['description'] = "No description available."
+    else:
+        if disease in df_description.index:
+            info['description'] = df_description.loc[disease]['Description']
+        else:
+            info['description'] = "No description available."
+
+    # --- Precaution lookup ---
+    if "Disease" in df_precaution.columns:
+        prec_row = df_precaution[df_precaution["Disease"].str.lower() == disease.lower()]
+        if not prec_row.empty:
+            precautions = [
+                prec_row[col].values[0] 
+                for col in prec_row.columns if col.startswith("Precaution")
+            ]
+            precautions = [p for p in precautions if isinstance(p, str) and p.strip()]
+            info['precautions'] = precautions
+        else:
+            info['precautions'] = []
+    else:
+        if disease in df_precaution.index:
+            precautions = [p for p in df_precaution.loc[disease] if pd.notna(p)]
+            info['precautions'] = precautions
+        else:
+            info['precautions'] = []
+
     return info
+
 
 def encode_symptoms(row, symptom_columns, all_symptoms):
     row_syms = set(
@@ -151,8 +181,17 @@ def get_medicine_info(med_name):
 
 import google.generativeai as genai
 
-# Gemini API set koro (API_KEY replace koro tomar key diye)
-genai.configure(api_key="API_KEY")
+# Load environment variables from .env file
+load_dotenv()
+
+# Get Gemini API Key from environment
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not API_KEY:
+    raise ValueError("❌ Gemini API Key not found. Please set GEMINI_API_KEY in your .env file.")
+
+# Configure Gemini
+genai.configure(api_key=API_KEY)
 
 # Model initialize
 model = genai.GenerativeModel("gemini-1.5-flash")
@@ -164,7 +203,7 @@ def chatbot_reply(user_input):
     if "medicine" in user_input or "drug" in user_input:
         med_name = user_input.replace("medicine", "").replace("drug", "").strip()
         if med_name:
-            return get_medicine_info(med_name)   # <-- ekhane tomar DB function use hobe
+            return get_medicine_info(med_name)
         else:
             return "Please tell me the medicine name you want to know about."
 
@@ -225,7 +264,8 @@ def index():
 @app.route('/symptom_checker', methods=['GET', 'POST'])
 def symptom_checker():
     if request.method == 'POST':
-        selected_symptoms = request.form.getlist('symptoms')
+        selected_symptoms = request.form.get("symptoms", "").split(",")
+        selected_symptoms = [s.strip() for s in selected_symptoms if s.strip()]
         results, error = predict_disease(selected_symptoms, app.df, app.df_precaution, app.df_description)
         
         if error:
@@ -376,4 +416,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=7000)
