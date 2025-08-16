@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from datetime import date, time
+from dotenv import load_dotenv
 import os
-from key import API_KEY
 
 app = Flask(__name__, template_folder='web/templates', static_folder='web/static')
 app.secret_key = 'qwertyuiopasdfghjklzxcvbnm'  # Change this for production
@@ -181,8 +181,17 @@ def get_medicine_info(med_name):
 
 import google.generativeai as genai
 
-# Gemini API set koro (API_KEY replace koro tomar key diye)
-genai.configure(api_key="API_KEY")
+# Load environment variables from .env file
+load_dotenv()
+
+# Get Gemini API Key from environment
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not API_KEY:
+    raise ValueError("❌ Gemini API Key not found. Please set GEMINI_API_KEY in your .env file.")
+
+# Configure Gemini
+genai.configure(api_key=API_KEY)
 
 # Model initialize
 model = genai.GenerativeModel("gemini-1.5-flash")
@@ -194,7 +203,7 @@ def chatbot_reply(user_input):
     if "medicine" in user_input or "drug" in user_input:
         med_name = user_input.replace("medicine", "").replace("drug", "").strip()
         if med_name:
-            return get_medicine_info(med_name)   # <-- ekhane tomar DB function use hobe
+            return get_medicine_info(med_name)
         else:
             return "Please tell me the medicine name you want to know about."
 
