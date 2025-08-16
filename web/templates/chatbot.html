@@ -30,13 +30,18 @@
         </div>
     </div>
     
-    <div class="form-container">
-        <form method="POST" action="{{ url_for('chatbot') }}">
-            <div class="input-group">
-                <input type="text" class="form-control" name="user_message" placeholder="Ask a question about your symptoms or urgency...">
-                <button class="btn btn-primary" type="submit">Send</button>
-            </div>
-        </form>
+    <div class="hero">
+        <div class="hero-text">
+            <form method="POST" action="{{ url_for('chatbot') }}" style="max-width: 500px; margin: 0 auto;">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" name="user_message" placeholder="Ask a question about your symptoms or urgency..." 
+                           style="flex: 1; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
+                    <button type="submit" style="background: #2E86C1; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: 0.3s;">
+                        Send
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

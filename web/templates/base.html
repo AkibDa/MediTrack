@@ -15,18 +15,45 @@
         <h1>MediTask</h1>
         <ul>
             <li><a id="home" href="/">Home</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a id="login" href="/login">Login</a></li>
-            <li><a href="/logout">Logout</a></li>
-            <li><a href="/register" id="register">Register</a></li>
+            {% if session.get('user') %}
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+              <li><a href="/explore">Services</a></li>
+                <li><a id="login" href="/login">Login</a></li>
+                <li><a href="/register" id="register">Register</a></li>
+            {% endif %}
         </ul>
     </nav>
+    
+    <!-- Flash Messages -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
     {% block content %}{% endblock content %}
     <footer>
         &copy; 2025 MediTask. All rights reserved.
     </footer>
     <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+    <script>
+        // Auto-hide flash messages after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(function() {
+                        message.remove();
+                    }, 300);
+                }, 5000);
+            });
+        });
+    </script>
 </body>
 </html>

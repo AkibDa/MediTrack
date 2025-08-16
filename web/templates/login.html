@@ -1,18 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="form-container">
-  <form method="POST" action="/login">
-    <h3 class="form-title">Login</h3>
-    <div class="form-group">
-      <label for="email" class="form-label">Email</label>
-      <input type="email" class="form-control" id="email" name="email" placeholder="Enter the email" required>
-    </div>
-    <div class="form-group">
-      <label for="password" class="form-label">Password</label>
-      <input type="password" class="form-control" id="password" name="password" placeholder="Enter the password" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-  </form>
+<div class="hero">
+  <div class="hero-text">
+    <h2 class="page-title">Login</h2>
+    <p>Welcome back! Please sign in to your account.</p>
+    
+    <form method="POST" action="/login" style="max-width: 400px; margin: 0 auto;">
+      <div style="margin-bottom: 1.5rem;">
+        <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required 
+               style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem; transition: border-color 0.3s;">
+      </div>
+      
+      <div style="margin-bottom: 2rem;">
+        <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required 
+               style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem; transition: border-color 0.3s;">
+      </div>
+      
+      <button type="submit" style="width: 100%; background: #2E86C1; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: 0.3s;">
+        Login
+      </button>
+    </form>
+    
+    <p style="margin-top: 1.5rem; text-align: center; color: #666;">
+      Don't have an account? <a href="/register" style="color: #2E86C1; text-decoration: none;">Register here</a>
+    </p>
+  </div>
 </div>
 {% endblock %}
