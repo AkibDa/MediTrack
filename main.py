@@ -180,7 +180,7 @@ def symptom_checker():
         results, error = predict_disease(selected_symptoms, app.df, app.df_precaution, app.df_description)
         
         if error:
-            return render_template('symtodis.html', 
+            return render_template('symptom_checker.html', 
                                  symptoms=app.ALL_SYMPTOMS,
                                  error=error)
         else:
@@ -188,12 +188,12 @@ def symptom_checker():
             session['last_selected_symptoms'] = selected_symptoms
             session['last_disease_for_doctors'] = results[0]['disease']
             
-            return render_template('symtodis.html',
+            return render_template('symptom_checker.html',
                                 symptoms=app.ALL_SYMPTOMS,
                                 results=results,
                                 selected_symptoms=selected_symptoms)
     
-    return render_template('symtodis.html', symptoms=app.ALL_SYMPTOMS)
+    return render_template('symptom_checker.html', symptoms=app.ALL_SYMPTOMS)
 
 @app.route('/doctors', methods=['GET', 'POST'])
 def doctors():

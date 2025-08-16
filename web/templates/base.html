@@ -16,11 +16,11 @@
         <ul>
             <li><a id="home" href="/">Home</a></li>
             {% if session.get('user') %}
-                <li><a href="/logout">Logout</a></li>
-            {% else %}
               <li><a href="/explore">Services</a></li>
-                <li><a id="login" href="/login">Login</a></li>
-                <li><a href="/register" id="register">Register</a></li>
+              <li><a href="/logout">Logout</a></li>
+            {% else %}
+              <li><a id="login" href="/login">Login</a></li>
+              <li><a href="/register" id="register">Register</a></li>
             {% endif %}
         </ul>
     </nav>
