@@ -1,0 +1,106 @@
+Hospital Name,Specialization,City,Phone No.
+Apollo Gleneagles Hospitals,Cardiologist,Bengaluru,9876543210
+"AMRI Hospitals, Dhakuria",Cardiologist,Bengaluru,9876543211
+"AMRI Hospitals, Salt Lake",Cardiologist,Bengaluru,9876543212
+"AMRI Hospitals, Mukundapur",Cardiologist,Delhi,9876543213
+"Fortis Hospital, Anandapur",Cardiologist,Delhi,9876543214
+Medica Superspecialty Hospital,Cardiologist,Delhi,9876543215
+Ruby General Hospital,Cardiologist,Hyderabad,9876543216
+Peerless Hospital & B.K. Roy Research Center,Cardiologist,Hyderabad,9876543217
+Woodlands Multispeciality Hospital,Cardiologist,Hyderabad,9876543218
+CMRI (Calcutta Medical Research Institute),Cardiologist,Kolkata,9876543219
+Belle Vue Clinic,Cardiologist,Kolkata,9876543220
+Desun Hospital,Cardiologist,Kolkata,9876543221
+"Narayana Multispeciality Hospital, Barasat",Cardiologist,Mumbai,9876543222
+R N Tagore International Institute of Cardiac Sciences,Cardiologist,Mumbai,9876543223
+"ILS Hospital, Dumdum",Cardiologist,Mumbai,9876543224
+"ILS Hospital, Salt Lake",Dermatologist,Bengaluru,9876543101
+"ILS Hospital, Howrah",Dermatologist,Bengaluru,9876543102
+Bhagirathi Neotia Woman & Child Care Centre,Dermatologist,Bengaluru,9876543103
+Institute of Neurosciences Kolkata (INK),Dermatologist,Delhi,9876543104
+B.P. Poddar Hospital,Dermatologist,Delhi,9876543105
+Kothari Medical Centre,Dermatologist,Delhi,9876543106
+IRIS Multispeciality Hospital,Dermatologist,Hyderabad,9876543107
+Genesis Hospital,Dermatologist,Hyderabad,9876543108
+Horizon Life Line Hospital,Dermatologist,Hyderabad,9876543109
+Spandan Hospital,Dermatologist,Kolkata,9876543110
+EEDF Hospital,Dermatologist,Kolkata,9876543111
+Charnock Hospital,Dermatologist,Kolkata,9876543112
+Repose Clinic & Nursing Home,Dermatologist,Mumbai,9876543113
+Rittika Nursing Home,Dermatologist,Mumbai,9876543114
+Anandlok Hospital,Dermatologist,Mumbai,9876543115
+NRS Medical College & Hospital,Endocrinologist,Bengaluru,9876543101
+SSKM (PG) Hospital,Endocrinologist,Bengaluru,9876543102
+R.G. Kar Medical College & Hospital,Endocrinologist,Bengaluru,9876543103
+Calcutta National Medical College,Endocrinologist,Delhi,9876543104
+Vivekananda Institute of Medical Sciences (Woodburn Park),Endocrinologist,Delhi,9876543105
+"ESIC Hospital, Manicktala",Endocrinologist,Delhi,9876543106
+Howrah District Hospital,Endocrinologist,Hyderabad,9876543107
+Sishu Mangal Hospital,Endocrinologist,Hyderabad,9876543108
+Vidyasagar State General Hospital,Endocrinologist,Hyderabad,9876543109
+Garden Reach State General Hospital,Endocrinologist,Kolkata,9876543110
+Sambhunath Pandit Hospital,Endocrinologist,Kolkata,9876543111
+Nil Ratan Sircar Hospital,Endocrinologist,Kolkata,9876543112
+Bangur Institute of Neurosciences,Endocrinologist,Mumbai,9876543113
+Bangur Institute of Psychiatry,Endocrinologist,Mumbai,9876543114
+Beliaghata ID Hospital,Endocrinologist,Mumbai,9876543115
+North Suburban Hospital,General Physician,Bengaluru,9876543201
+Baguiati Sanjeevani Hospital,General Physician,Bengaluru,9876543202
+Rittick Nursing Home,General Physician,Bengaluru,9876543203
+Zenith Super Specialist Hospital,General Physician,Delhi,9876543204
+ESI Hospital Sealdah,General Physician,Delhi,9876543205
+Tapan Sinha Memorial Hospital,General Physician,Delhi,9876543206
+"JNM Hospital, Kalyani (nearby)",General Physician,Hyderabad,9876543207
+Dr. B.C. Roy Memorial Hospital for Children,General Physician,Hyderabad,9876543208
+Rittik Nursing Home,General Physician,Hyderabad,9876543209
+Institute of Child Health,General Physician,Kolkata,9876543210
+Maharaja Surajmal Institute of Medical Science,General Physician,Kolkata,9876543211
+GD Hospital & Diabetes Institute,General Physician,Kolkata,9876543212
+Hope Hospital,General Physician,Mumbai,9876543213
+Currae Eye & Maternity Hospital,General Physician,Mumbai,9876543214
+Lions North Calcutta Hospital,General Physician,Mumbai,9876543215
+Marwari Relief Society Hospital,Neurologist,Bengaluru,9876543251
+Seva Sadan Hospital,Neurologist,Bengaluru,9876543252
+Sri Aurobindo Seva Kendra (EEDF),Neurologist,Bengaluru,9876543253
+B.P. Poddar Hospital & Medical Research Ltd.,Neurologist,Delhi,9876543254
+Barisha Nursing Home,Neurologist,Delhi,9876543255
+KPC Medical College & Hospital,Neurologist,Delhi,9876543256
+"ESI Hospital, Joka",Neurologist,Hyderabad,9876543257
+Nabanir Hospital,Neurologist,Hyderabad,9876543258
+Suraksha Hospital,Neurologist,Hyderabad,9876543259
+Mediland Hospital,Neurologist,Kolkata,9876543260
+Remedy Hospital,Neurologist,Kolkata,9876543261
+Parkview Hospital,Neurologist,Kolkata,9876543262
+Jeevan Jyoti Hospital,Neurologist,Mumbai,9876543263
+Microlap Nursing Home,Neurologist,Mumbai,9876543264
+Southern Medical Centre,Neurologist,Mumbai,9876543265
+Apex Nursing Home,Pulmonologist,Bengaluru,9876543266
+Institute of Pulmocare & Research,Pulmonologist,Bengaluru,9876543267
+Susrut Eye Foundation & Research Centre,Pulmonologist,Bengaluru,9876543268
+"Disha Eye Hospital, Barrackpore",Pulmonologist,Delhi,9876543269
+"Disha Eye Hospital, Gariahat",Pulmonologist,Delhi,9876543270
+Rotary Narayana Eye Hospital,Pulmonologist,Delhi,9876543271
+Sunetra Family Eye Care Centre,Pulmonologist,Hyderabad,9876543272
+Regional Institute of Ophthalmology,Pulmonologist,Hyderabad,9876543273
+Priyamvada Birla Aravind Eye Hospital,Pulmonologist,Hyderabad,9876543274
+Aurobindo Seva Kendra Eye Care,Pulmonologist,Kolkata,9876543275
+"Susrut Eye Hospital, Salt Lake",Pulmonologist,Kolkata,9876543276
+Anandapur Eye Hospital,Pulmonologist,Kolkata,9876543277
+Jayprakash Narayan Eye Hospital,Pulmonologist,Mumbai,9876543278
+"Zenith Hospital, Belgharia",Pulmonologist,Mumbai,9876543279
+Baghajatin State General Hospital,Pulmonologist,Mumbai,9876543280
+Sishumangal Hospital,Gynecologist,Bengaluru,9876543281
+Bhowanipore Nursing Home,Gynecologist,Bengaluru,9876543282
+Calcutta Heart Research Centre,Gynecologist,Bengaluru,9876543283
+Desun Nursing Home,Gynecologist,Delhi,9876543284
+Medstar Hospital,Gynecologist,Delhi,9876543285
+Remedy Multispeciality,Gynecologist,Delhi,9876543286
+Anandamayee Hospital,Gynecologist,Hyderabad,9876543287
+Spandan Nursing Home,Gynecologist,Hyderabad,9876543288
+Rittika Multispeciality Centre,Gynecologist,Hyderabad,9876543289
+Apollo Sugar Clinic,Gynecologist,Kolkata,9876543290
+,Gynecologist,Kolkata,9876543291
+,Gynecologist,Kolkata,9876543292
+,Gynecologist,Mumbai,9876543293
+,Gynecologist,Mumbai,9876543294
+,Gynecologist,Mumbai,9876543295
