@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from datetime import date, time
 import os
+from key import API_KEY
 
 app = Flask(__name__, template_folder='web/templates', static_folder='web/static')
 app.secret_key = 'qwertyuiopasdfghjklzxcvbnm'  # Change this for production
@@ -178,16 +179,26 @@ def save_reminders(df):
 def get_medicine_info(med_name):
     return f"{med_name.title()} is a common medicine. (Demo info, integrate API here)"
 
+import google.generativeai as genai
+
+# Gemini API set koro (API_KEY replace koro tomar key diye)
+genai.configure(api_key="API_KEY")
+
+# Model initialize
+model = genai.GenerativeModel("gemini-1.5-flash")
+
 def chatbot_reply(user_input):
     user_input = user_input.lower()
 
+    # Medicine Info
     if "medicine" in user_input or "drug" in user_input:
         med_name = user_input.replace("medicine", "").replace("drug", "").strip()
         if med_name:
-            return get_medicine_info(med_name)
+            return get_medicine_info(med_name)   # <-- ekhane tomar DB function use hobe
         else:
             return "Please tell me the medicine name you want to know about."
 
+    # Doctor Info
     elif "doctor" in user_input:
         for spec in DOCTORS_DB["specialization"].unique():
             if spec.lower() in user_input:
@@ -200,8 +211,13 @@ def chatbot_reply(user_input):
                     return f"Sorry, I couldn't find any {spec} doctors."
         return "Please tell me the specialization of the doctor you are looking for."
 
+    # Default → Gemini AI
     else:
-        return "I'm your medical assistant. You can ask me about medicines or doctors."
+        try:
+            response = model.generate_content(user_input)
+            return response.text
+        except Exception as e:
+            return f"Error with Gemini API: {e}"
 
 # -----------------------------
 # Initialize Data

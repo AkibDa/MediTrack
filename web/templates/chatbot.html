@@ -6,6 +6,20 @@
     <div class="alert alert-warning">
         Demo assistant. For medical advice, consult a professional.
     </div>
+
+    <div class="hero">
+        <div class="hero-text">
+            <form method="POST" action="{{ url_for('chatbot_page') }}" style="max-width: 500px; margin: 0 auto;">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" name="user_message" placeholder="Ask a question about your symptoms or urgency..." 
+                           style="flex: 1; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
+                    <button type="submit" style="background: #2E86C1; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: 0.3s;">
+                        Send
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     
     <div class="card">
         <div class="card-header">
@@ -30,19 +44,7 @@
         </div>
     </div>
     
-    <div class="hero">
-        <div class="hero-text">
-            <form method="POST" action="{{ url_for('chatbot_page') }}" style="max-width: 500px; margin: 0 auto;">
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" name="user_message" placeholder="Ask a question about your symptoms or urgency..." 
-                           style="flex: 1; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 5px; font-size: 1rem;">
-                    <button type="submit" style="background: #2E86C1; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: 0.3s;">
-                        Send
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+    
 </div>
 
 <script>
