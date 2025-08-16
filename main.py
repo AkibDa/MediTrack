@@ -60,8 +60,6 @@ def predict_disease(symptoms_list, df, df_precaution, df_description):
     classes = model.classes_
 
     top_indices = np.argsort(probabilities)[-3:][::-1]
-    top_diseases = classes[top_indices]
-
     results = []
     for rank_idx, cls_idx in enumerate(top_indices, start=1):
         disease = classes[cls_idx]
@@ -76,7 +74,10 @@ def predict_disease(symptoms_list, df, df_precaution, df_description):
 
     return results, None
 
-# Specialist mapping and doctors database
+# -----------------------------
+# Doctors Database
+# -----------------------------
+
 DISEASE_SPECIALIST_MAP = {
     'asthma': 'Pulmonologist',
     'pneumonia': 'Pulmonologist',
@@ -108,11 +109,9 @@ DOCTORS_DB = pd.DataFrame([
     {"name": "Care & Cure", "specialization": "Pulmonologist", "city": "Hyderabad", "phone": "040-6677-7788"},
 ])
 
-# Reminders functionality
-REMINDERS_CSV = "reminders.csv"
-
-import pandas as pd
-import os
+# -----------------------------
+# Doctors CSV (Optional)
+# -----------------------------
 
 DOCTOR_CSV = "doctor_database.csv"   
 
@@ -128,59 +127,56 @@ def load_doctors():
 def save_doctors(df):
     df.to_csv(DOCTOR_CSV, index=False)
 
-# Example use
-if __name__ == "__main__":
-    doctors = load_doctors()
-    print(doctors.head())   # show first 5 doctors
+# -----------------------------
+# Reminders
+# -----------------------------
 
+REMINDERS_CSV = "reminders.csv"
 
-# Chatbot
-@app.route("/chatbot", methods=["POST"])
-def chatbot():
-    user_input = request.json.get("message", "").lower()
+def load_reminders():
+    if os.path.exists(REMINDERS_CSV):
+        return pd.read_csv(REMINDERS_CSV)
+    return pd.DataFrame(columns=["when_date", "when_time", "type", "text"])
 
-    response = ""
+def save_reminders(df):
+    df.to_csv(REMINDERS_CSV, index=False)
 
-    # Simple logic
+# -----------------------------
+# Chatbot Helper
+# -----------------------------
+
+def get_medicine_info(med_name):
+    return f"{med_name.title()} is a common medicine. (Demo info, integrate API here)"
+
+def chatbot_reply(user_input):
+    user_input = user_input.lower()
+
     if "medicine" in user_input or "drug" in user_input:
         med_name = user_input.replace("medicine", "").replace("drug", "").strip()
         if med_name:
-            response = get_medicine_info(med_name)
+            return get_medicine_info(med_name)
         else:
-            response = "Please tell me the medicine name you want to know about."
+            return "Please tell me the medicine name you want to know about."
 
     elif "doctor" in user_input:
-        # extract speciality
-        speciality = None
-        city = None
-
-        for spec in doctors_df["Speciality"].unique():
+        for spec in DOCTORS_DB["specialization"].unique():
             if spec.lower() in user_input:
-                speciality = spec
-                break
-
-        for c in doctors_df["City"].unique():
-            if str(c).lower() in user_input:
-                city = c
-                break
-
-        if speciality:
-            doctor_list = suggest_doctor(speciality, city)
-            if doctor_list:
-                response = f"Here are some {speciality} doctors:\n" + "\n".join(
-                    [f"{doc['Doctor Name']} ({doc['City']}) - {doc['Contact']}" for doc in doctor_list]
-                )
-            else:
-                response = f"Sorry, I couldn't find any {speciality} doctors."
-        else:
-            response = "Please tell me the speciality of the doctor you are looking for."
+                filtered = DOCTORS_DB[DOCTORS_DB["specialization"].str.lower() == spec.lower()]
+                if not filtered.empty:
+                    return "Here are some doctors:\n" + "\n".join(
+                        [f"{row['name']} ({row['city']}) - {row['phone']}" for _, row in filtered.iterrows()]
+                    )
+                else:
+                    return f"Sorry, I couldn't find any {spec} doctors."
+        return "Please tell me the specialization of the doctor you are looking for."
 
     else:
-        response = "I'm your medical assistant. You can ask me about medicines or doctors."
+        return "I'm your medical assistant. You can ask me about medicines or doctors."
 
-    return jsonify({"reply": response})
+# -----------------------------
+# Initialize Data
+# -----------------------------
 
-# Initialize data on first request
 def initialize_data():
     try:
         df, df_precaution, df_description = load_data()
@@ -188,7 +184,6 @@ def initialize_data():
         app.df_precaution = df_precaution
         app.df_description = df_description
         
-        # Precompute symptom universe for dropdown
         symptom_columns = [col for col in df.columns if str(col).startswith("Symptom_")]
         app.ALL_SYMPTOMS = sorted(set(
             str(sym).strip().lower().replace(" ", "_")
@@ -200,7 +195,6 @@ def initialize_data():
         app.logger.error(f"Failed to load data: {e}")
         raise
 
-# Initialize data when app starts
 with app.app_context():
     initialize_data()
 
@@ -301,7 +295,7 @@ def reminders():
     return render_template('remind.html', reminders=reminders_df.to_dict('records'))
 
 @app.route('/chatbot', methods=['GET', 'POST'])
-def chatbot():
+def chatbot_page():
     if 'chat' not in session:
         session['chat'] = []
     
@@ -319,15 +313,16 @@ def chatbot():
 def explore():
     return render_template('explore.html')
 
-# Auth routes
+# -----------------------------
+# Auth Routes
+# -----------------------------
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
         
-        # For demo purposes, accept any login
-        # In production, you'd want proper authentication
         if email and password:
             session['user'] = email
             flash('Logged in successfully!', 'success')
@@ -352,8 +347,6 @@ def register():
         elif len(password1) < 6:
             flash('Password must be at least 6 characters!', 'error')
         else:
-            # For demo purposes, just log them in
-            # In production, you'd want to save to database
             session['user'] = email
             flash('Account created successfully!', 'success')
             return redirect(url_for('index'))
