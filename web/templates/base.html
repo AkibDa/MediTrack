@@ -8,19 +8,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mozilla+Headline:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,800;0,900;1,100;1,200;1,300;1,700;1,800;1,900&family=Ubuntu&display=swap" rel="stylesheet">
-    <style>
-      type = "text/css"
-      src = "{{ url_for('static', filename='style.css') }}"
-    </style>
+    <link rel="stylesheet" href="./static/style.css">
 </head>
 <body>
     <nav>
         <h1>MediTask</h1>
         <ul>
-            <li><a href="#">Home</a></li>
+            <li><a id="home" href="/">Home</a></li>
             <li><a href="#">Services</a></li>
             <li><a href="#">About</a></li>
             <li><a href="#">Contact</a></li>
+            <li><a id="login" href="/login">Login</a></li>
+            <li><a href="#">Logout</a></li>
+            <li><a href="/register" id="register">Register</a></li>
         </ul>
     </nav>
     {% block content %}{% endblock content %}
