@@ -20,11 +20,41 @@ def load_data():
 
 def get_disease_info(disease, df_precaution, df_description):
     info = {}
-    if disease in df_description.index:
-        info['description'] = df_description.loc[disease]['Description']
-    if disease in df_precaution.index:
-        info['precautions'] = [p for p in df_precaution.loc[disease] if pd.notna(p)]
+
+    # --- Description lookup ---
+    if "Disease" in df_description.columns:
+        desc_row = df_description[df_description["Disease"].str.lower() == disease.lower()]
+        if not desc_row.empty:
+            info['description'] = desc_row['Description'].values[0]
+        else:
+            info['description'] = "No description available."
+    else:
+        if disease in df_description.index:
+            info['description'] = df_description.loc[disease]['Description']
+        else:
+            info['description'] = "No description available."
+
+    # --- Precaution lookup ---
+    if "Disease" in df_precaution.columns:
+        prec_row = df_precaution[df_precaution["Disease"].str.lower() == disease.lower()]
+        if not prec_row.empty:
+            precautions = [
+                prec_row[col].values[0] 
+                for col in prec_row.columns if col.startswith("Precaution")
+            ]
+            precautions = [p for p in precautions if isinstance(p, str) and p.strip()]
+            info['precautions'] = precautions
+        else:
+            info['precautions'] = []
+    else:
+        if disease in df_precaution.index:
+            precautions = [p for p in df_precaution.loc[disease] if pd.notna(p)]
+            info['precautions'] = precautions
+        else:
+            info['precautions'] = []
+
     return info
+
 
 def encode_symptoms(row, symptom_columns, all_symptoms):
     row_syms = set(
@@ -209,7 +239,8 @@ def index():
 @app.route('/symptom_checker', methods=['GET', 'POST'])
 def symptom_checker():
     if request.method == 'POST':
-        selected_symptoms = request.form.getlist('symptoms')
+        selected_symptoms = request.form.get("symptoms", "").split(",")
+        selected_symptoms = [s.strip() for s in selected_symptoms if s.strip()]
         results, error = predict_disease(selected_symptoms, app.df, app.df_precaution, app.df_description)
         
         if error:
@@ -360,4 +391,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=7000)
