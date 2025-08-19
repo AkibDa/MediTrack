@@ -172,6 +172,50 @@ def load_doctors():
         print(f"Error loading doctors: {str(e)}")
         return pd.DataFrame(columns=["name", "specialization", "city", "phone", "rating"])
 
+def get_unique_cities():
+    """Get all unique cities from the doctor database, including defaults"""
+    try:
+        # Load the doctor data
+        df = load_doctors()
+        
+        # Get unique cities from the database
+        db_cities = df['city'].dropna().unique().tolist()
+        
+        # Combine with default cities and remove duplicates
+        all_cities = list(set(db_cities + DEFAULT_CITIES))
+        
+        # Sort alphabetically and return
+        return sorted(all_cities)
+    
+    except Exception as e:
+        print(f"Error getting cities: {str(e)}")
+        # Return just the default cities if there's an error
+        return sorted(DEFAULT_CITIES)
+
+
+def get_unique_specializations():
+    """Get all unique specializations from the doctor database"""
+    try:
+        # Load the doctor data
+        df = load_doctors()
+        
+        # Get unique specializations, remove empty/NA values
+        specializations = df['specialization'].dropna().unique().tolist()
+        
+        # Also include all specializations from disease mapping
+        disease_specializations = list(set(DISEASE_SPECIALIST_MAP.values()))
+        
+        # Combine and remove duplicates
+        all_specializations = list(set(specializations + disease_specializations))
+        
+        # Sort alphabetically and return
+        return sorted(all_specializations)
+    
+    except Exception as e:
+        print(f"Error getting specializations: {str(e)}")
+        # Return just the specializations from disease mapping if error
+        return sorted(list(set(DISEASE_SPECIALIST_MAP.values())))
+
 def save_doctors(df):
     """Save doctor data to your CSV"""
     try:
@@ -179,8 +223,10 @@ def save_doctors(df):
     except Exception as e:
         print(f"Error saving doctors: {str(e)}")
 
-# Search Functions (unchanged)
-def find_doctors(city=None, specialization=None, min_rating=None):
+# Configuration and data loading functions remain the same...
+
+# Rename the search function to avoid conflict
+def search_doctors(city=None, specialization=None, min_rating=None):
     """Search doctors with flexible matching"""
     df = load_doctors()
     
@@ -201,16 +247,21 @@ def find_doctors(city=None, specialization=None, min_rating=None):
     
     return df.sort_values(['rating', 'name'], ascending=[False, True])
 
-def get_unique_specializations():
-    df = load_doctors()
-    return sorted(df['specialization'].unique().tolist())
+# Update the route to use the renamed function
+@app.route('/find-doctors', methods=['GET', 'POST'])
+def find_doctors_route():  # Renamed from find_doctors
+    if request.method == 'POST':
+        specialization = request.form.get('specialization', '').strip()
+        
+        doctors_df = search_doctors(specialization=specialization)
+        doctors = doctors_df.to_dict('records')
+        return render_template('findoc.html', 
+                            doctors=doctors,
+                            specializations=get_unique_specializations())
+    
+    return render_template('findoc.html',
+                         specializations=get_unique_specializations())
 
-def get_unique_cities():
-    df = load_doctors()
-    cities = df['city'].unique().tolist()
-    return sorted(list(set(cities + DEFAULT_CITIES)))
-
-# Flask Routes (unchanged except for endpoint names)
 @app.route('/doctors', methods=['GET', 'POST'])
 def doctors():
     init_doctor_db()
@@ -233,7 +284,7 @@ def doctors():
     search_performed = bool(city or specialization or disease)
     
     if search_performed:
-        doctors_df = find_doctors(
+        doctors_df = search_doctors(
             city=city if city else None,
             specialization=specialization if specialization else None
         )
@@ -252,6 +303,8 @@ def doctors():
     }
     
     return render_template('findoc.html', **context)
+
+# The add_doctor route remains the same...
 
 @app.route('/doctors/add', methods=['POST'])
 def add_doctor():
