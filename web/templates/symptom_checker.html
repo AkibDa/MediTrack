@@ -23,6 +23,29 @@
                             <input type="text" id="symptom-input" style="color: black" class="form-control" placeholder="Type a symptom..." autocomplete="on" />
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-search"></i></span>
+<div class="main-content container py-4 mx-auto" style="max-width: 800px;">
+    <!-- Form card centered -->
+    <div class="d-flex justify-content-center">
+        <div class="card border-0 shadow-sm" style="max-width: 600px; width:100%;">
+            <div class="card-body p-4 text-center">
+                <h1 class="h3 mb-4 text-primary font-weight-bold">🔍 Symptom Checker</h1>
+
+                <div class="alert alert-light border mb-4 mx-auto" style="max-width: 500px;">
+                    <i class="fas fa-info-circle me-2"></i> Select one or more symptoms by typing and choosing from the dropdown.
+                </div>
+
+                <form method="POST" action="{{ url_for('symptom_checker') }}" class="mx-auto" style="max-width: 500px;">
+                    <div class="form-group text-center">
+                        <label for="symptom-input" class="font-weight-bold text-muted mb-2" style="color:white">Enter Symptoms</label>
+                        
+                        <!-- Container for tags -->
+                        <div id="tags-container" class="tags-container mb-3 d-flex justify-content-center flex-wrap"></div>
+                        
+                        <!-- Input with autocomplete -->
+                        <div class="input-group mx-auto" style="width: 100%;">
+                            <input type="text" id="symptom-input" class="form-control form-control-lg text-center " style="color: white;" placeholder="Type a symptom..." autocomplete="off" />
+                            <div class="input-group-append">
+                                <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
                             </div>
                         </div>
                         
@@ -31,12 +54,13 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-submit">
+                    <button type="submit" class="btn btn-primary btn-lg mt-3 py-2 mx-auto" style="width: 200px;">
                         <i class="fas fa-heartbeat me-2"></i> Analyze Symptoms
                     </button>
                 </form>
             </div>
         </div>
-
+          
         {% if results %}
         <div class="results-container mt-5">
             <h2 class="results-title">Possible Conditions</h2>
@@ -64,6 +88,42 @@
                             {% for precaution in result.precautions %}
                             <div class="precaution-item">
                                 <i class="fas fa-check-circle text-success me-2"></i>
+    {% if results %}
+    <!-- Results centered -->
+    <div class="results mt-5 mx-auto text-center" style="max-width: 900px;">
+        <h2 class="mb-4 font-weight-bold text-primary" style="font-size: 2rem; color:white">Possible Conditions</h2>
+        
+        {% for result in results %}
+        <div class="card shadow-sm border-0 rounded-3 mb-4 mx-auto" style="max-width: 700px; width:100%;">
+            <div class="card-body p-4 text-left">
+                <div class="d-flex align-items-center mb-3">
+                    <h3 class="card-title mb-0 font-weight-bold" style="font-size: 1.8rem;">
+                        {{ result.disease|title }}
+                    </h3>
+                    <span class="badge bg-primary-soft text-primary ml-3 px-3 py-2 rounded-pill" style="font-size: 1.1rem;">
+                        Confidence: {{ result.confidence }}%
+                    </span>
+                </div>
+    
+                {% if result.description %}
+                <div class="bg-light p-4 rounded mb-4" style="font-size: 1.2rem; line-height: 1.6;">
+                    <p class="mb-0">
+                        <strong style="font-size: 1.3rem;">Description:</strong> {{ result.description }}
+                    </p>
+                </div>
+                {% endif %}
+    
+                {% if result.precautions %}
+                <div class="mt-4">
+                    <h4 class="text-muted mb-3" style="font-size: 1.5rem; color: white;">
+                        <i class="fas fa-shield-alt me-2" style="color: white;"></i> 
+                        {% if result.disease == 'Typhoid' %}Precautions{% else %}Prevention{% endif %}
+                    </h4>
+                    <div class="row">
+                        {% for precaution in result.precautions %}
+                        <div class="col-md-6 mb-3">
+                            <div class="bg-light p-3 rounded d-flex align-items-center" style="font-size: 1.2rem;">
+                                <i class="fas fa-check-circle text-success me-3" style="font-size: 1.3rem;"></i>
                                 <span>{{ precaution }}</span>
                             </div>
                             {% endfor %}
@@ -75,8 +135,11 @@
             {% endfor %}
         </div>
         {% endif %}
+        {% endfor %}
     </div>
+    {% endif %}
 </div>
+
 
 <style>
     /* Base Styles */
@@ -85,6 +148,12 @@
         background-color: #f8f9fa;
         color:rgb(13, 13, 13);
         padding: 20px 0;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        margin-top: 120px;
+        align-items: center;         
     }
 
     .main-content {
@@ -93,6 +162,52 @@
     }
 
     /* Card Styles */
+    /* Enhanced Typography */
+        .results {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+        }
+        
+        
+        .card-title {
+            letter-spacing: 0.5px;
+        }
+        
+        /* Improved Spacing */
+        .card {
+            margin-bottom: 2rem!important;
+        }
+        
+        .mb-3, .my-3 {
+            margin-bottom: 1.5rem!important;
+        }
+        
+        .mb-4, .my-4 {
+            margin-bottom: 2rem!important;
+        }
+        
+        .p-4 {
+            padding: 2rem!important;
+        }
+        
+        /* Better Contrast */
+        .text-muted {
+            color:rgb(250, 252, 253)!important;
+        }
+        
+        .bg-primary-soft {
+            background-color: rgba(67, 97, 238, 0.1)!important;
+        }
+        
+        .bg-light {
+            background-color: #f8f9fa!important;
+            color: black;
+            border-radius: 10px;
+        }
+    
     .card {
         border-radius: 12px;
         overflow: hidden;
@@ -267,6 +382,14 @@
         max-width: 600px;
         background: white;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border: 1px solid #eeeeee;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        border-top: none;
+        z-index: 99;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
         max-height: 200px;
         overflow-y: auto;
     }
@@ -275,6 +398,8 @@
         padding: 10px 15px;
         cursor: pointer;
         border-bottom: 1px solid #f8f9fa;
+        border-bottom: 1px solid #121313;
+        text-align: left;
     }
 
     .autocomplete-items div:hover {
@@ -305,6 +430,8 @@
 
 <script>
     const allSymptoms = {{ symptoms|tojson }};
+    // (Keep the same JavaScript code as provided in the previous solution)
+    const allSymptoms = JSON.parse('{{ symptoms|tojson|safe }}');
     const input = document.getElementById("symptom-input");
     const tagsContainer = document.getElementById("tags-container");
     const hiddenInput = document.getElementById("symptoms-hidden");
